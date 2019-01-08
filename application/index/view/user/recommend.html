@@ -1,0 +1,157 @@
+{include file="header"/}
+<link href="/static/renwucss/awesome.css" rel="stylesheet">
+<link href="/static/renwucss/base.css" rel="stylesheet">
+<link href="/static/renwucss/common.css" rel="stylesheet">
+<link href="/static/renwucss/iSlider.css" rel="stylesheet">
+<link href="/static/renwucss/index.css" rel="stylesheet">
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>推荐记录</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-recommend">
+        <ul class="coupon-title">
+            <li style="width: 49.5%;" onclick="window.location.href='{:url('/index/user/invite')}'">邀请好友</li>
+            <li style="width: 49.5%;" class="ahover"  onclick="window.location.href='{:url('/index/user/recommend')}'">推荐记录</li>
+        </ul>
+        <!--记录总和-->
+        <div class="recommend-sum">
+            <ul>
+                <li>
+                    <p>{$num}</p>
+                    <span>已邀请团队</span>
+                </li>
+                <li>
+                    <p>{$mycredit2}</p>
+                    <span>推荐总奖金</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!--记录总和结束-->
+
+         <!--记录列表-->
+        <div class="recommend-list" >
+            <!--<div class="list-tips">所有推荐类奖金可于邀请人认购期满后单独提现</div>-->
+            <ul >
+                {volist name='list' id='vo'}
+                <li>
+                    <img src="{php}if(!empty($vo['avatar'])) echo imgUrl($vo['avatar']);else echo imgUrl(''){/php}" class="list-photo" />
+                    <div class="list-info" style="float: unset;margin-left: 1.1rem">
+                        <p>{$vo.username}<span style="display: inline;float: right"> 现拥有羊羔数：{$vo.num}</span></p>
+                        <span>注册时间：{php}echo date("Y-m-d ",$vo['reg_time']);{/php}
+                            <a style="display: inline;float: right;color: #1155CC" onclick="getMember({$vo.id})">已兑换羊羔数：{$vo.sell_num}</a>
+                        </span>
+                        <span style="padding: .15rem 0">联系方式：{$vo.mobile}<span style="display: inline;float: right"> 下级人数：{$vo.agentnum}</span></span>
+                    </div>
+<!--                    <div class="list-money">
+                        <i class="fa fa-plus"></i><span>0.00</span>
+                    </div>-->
+                    <div class='right-icon' style=" text-align: center;color: #5fbd78;font-size: .3rem;">
+                        <i class="fa fa-chevron-circle-up" aria-hidden="true"></i>
+                        <!-- <i class="fa fa-chevron-circle-down" aria-hidden="true"></i> -->
+                    </div>
+                </li>
+                <div class="task-detail" style="display: none;background-color: #E8E8E8">
+                {if !empty($vo['agent'])}
+                    {volist name='vo["agent"]' id='v2'}
+                        <li>
+                            <img src="{php}if(!empty($v2['avatar'])) echo imgUrl($v2['avatar']);else echo imgUrl(''){/php}" class="list-photo" />
+                            <div class="list-info" style="float: unset;margin-left: 1.1rem">
+                                <p>{$v2.username}<span style="display: inline;float: right"> 现拥有羊羔数：{$v2.num}</span></p>
+                                <span>注册时间：{php}echo date("Y-m-d ",$v2['reg_time']);{/php}
+                                    <a style="display: inline;float: right;color: #1155CC" onclick="getMember({$v2.id})">已兑换羊羔数：{$v2.sell_num}</a>
+                                </span>
+                               <!--<span style="display: inline;float: right;padding: .15rem 0"> 二级</span>-->
+                            </div>
+
+                        </li>
+                    {/volist}
+                    {else /}
+                    <li>
+                        <div style="text-align: center">无下级信息</div>
+                    </li>
+                {/if}
+                </div>
+                {/volist}
+            </ul>
+
+        </div>
+        <!--记录列表结束-->
+
+    </div>
+
+    <!--内容主体结束-->
+    <script>
+        $(function () {
+            // 切换任务信息的显示和隐藏
+            !function () {
+                $('.right-icon i').on('click', function () {
+                    $(this).toggleClass('fa-chevron-circle-right fa-chevron-circle-down');
+//                    var ele = $(this).next('') ;
+                   ($(this).parents('li').next()).toggle()
+                    //console.log($(ele));
+                });
+            }();
+
+        });
+        function getMember(id) {
+            var uid =  id;
+
+            //先查找用户信息
+            $.ajax({
+                type: 'POST',
+                url: '{:url("/index/user/getselllamb")}',
+                data:{
+                    uid:id,
+                },
+                dataType:'json',
+                success: function(data){
+                    if(data.type==1){
+
+                        //示范一个公告层
+                        layer.open({
+                            type: 1
+                            ,title: false //不显示标题栏
+                            ,closeBtn: false
+                            ,area: '5.5rem;'
+                            ,shade: 0.8
+                            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                            ,btn: ['确认', '取消']
+                            ,btnAlign: 'c'
+                            ,moveType: 1 //拖拽模式，0或者1
+                            ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">' +
+                            '兑换明细：<br><br>兑换旅游：'+data.data.lvyou+
+//                            '<br>兑换收益：'+data.data.shouyi+
+                            '<br>兑换产品：'+data.data.changpin+'<br>' +
+                            '</div>'
+                            ,success: function(layero){
+                                var btn = layero.find('.layui-layer-btn');
+                                btn.find('.layui-layer-btn0').attr({
+
+
+                                });
+                            }
+                        });
+
+                    }else{
+                        layer.msg(data.data);
+                    }
+                },
+                error: function(xhr){
+                    layer.msg('error');
+                }
+
+
+            });
+        }
+    </script>
+</body>
+</html>

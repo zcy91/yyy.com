@@ -1,0 +1,26 @@
+{include file="header"/}
+</head>
+<body style="position:relative;background:#f2f2f2">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>常见问题</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-questions">
+        <ul>
+            {volist name='list' id='vo'  key="k"}
+            <li>
+                <a href="{:url('/index/discovery/content',array('id'=>$vo.id))}">{$k}、{$vo.title}</a>
+            </li>
+            {/volist}
+        </ul>
+    </div>
+    <!--内容主体结束-->
+
+</body>
+</html>

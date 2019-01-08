@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>我的钱包 - 食花百草羊</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="/static/home/css/base.css" rel="stylesheet" />
+    <link href="/static/home/css/currency.css" rel="stylesheet" />
+    <link href="/static/home/css/index.css" rel="stylesheet" />
+    <script src="/static/home/js/jquery1.10.2.js"></script>
+    <script src="/static/home/js/common.js"></script>
+    <script src="/static/home/js/fontSize.js"></script>
+    <script src="/static/home/layer/layer.js"></script>
+    <link href="/static/home/css/font-awesome.css" rel="stylesheet" />
+    <script src="/static/home/js/echarts.min.js"></script>
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>我的钱包</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-wallet">
+        <!--收益报表-->
+        <div class="wallet-income">
+            <div class="income-money">
+                <p>{$lambprofit}</p>
+                <span>累计收益（元）</span>
+            </div>
+            <div id="main" class="income-chart"></div>
+        </div>
+        <!--收益报表结束-->
+        <!--资金余额-->
+        <div class="wallet-money">
+           <ul>
+               <li>
+                   <span>养殖成本（元）</span>
+                   <p>{$lambcost}</p>
+               </li>
+               <li>
+                   <span>账户余额（元）</span>
+                   <p>{$member.credit}</p>
+               </li>
+           </ul>
+        </div>
+        <!--资金余额结束-->
+    </div>
+    <!--内容主体结束-->
+    <!--钱包底部-->
+    <div class="m-walletFT">
+       <a href="{:url('/index/user/take')}">提现</a>
+        <a href="{:url('/index/user/recharge')}">充值</a>
+    </div>
+    <!--钱包底部结束-->
+
+    <script>
+$(function () {
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    var colors = ['#3ca9fd'];
+
+    // 指定图表的配置项和数据
+    option = {
+
+        color: colors,
+
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                crossStyle: {
+                    color: '#999'
+                }
+            }
+        },
+
+        //legend: {
+        //    data: ['收益'],
+        //},
+        grid: {
+            top:'5%',
+            right: '2%',
+            bottom:'10%',
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                min: 0,
+                max: {$year.max},
+                interval: 50,
+            },
+        ],
+        series: [
+            {
+                name: '收益',
+                type: 'bar',
+                data: [{$year.yiprice}, {$year.erprice}, {$year.sanprice}, {$year.siprice}, {$year.wuprice}, {$year.liuprice}, {$year.qiprice}, {$year.baprice}, {$year.jiuprice}, {$year.shiprice}, {$year.shiyiprice}, {$year.shierprice}]
+            },
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+});
+        
+        
+        
+    </script>
+
+</body>
+</html>

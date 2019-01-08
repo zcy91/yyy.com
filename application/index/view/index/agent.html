@@ -1,0 +1,41 @@
+{include file="header"/}
+</head>
+<style>
+    .agent{
+        padding: 0 .1rem;
+        font-size: .22rem;
+        line-height: .3rem;
+        color: #999999;
+    }
+</style>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+
+        <p>代理证书</p>
+        <div class="public-input-wrapper" style="padding-top: 0">
+            <a class="public-submit" href="javascript:void(0);" onclick="return validate_comment()">成为代理</a>
+        </div>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-protocol">
+
+        <img src="{:url('/index/index/getagent',array('uid'=>$uid,'id'=>$id))}" />
+
+    </div>
+    <div class="agent" style="text-align: center">
+        代理说明如下：
+    </div>
+    <div class="agent">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A代理推荐B代理领养并且兑换成功，A代理会获得350元/只的奖励；B代理推荐C代理领养并且兑换成功 ，B代理会获得350元/只奖励，A代理会获得150元/只奖励，C代理推荐D代理领养并且兑换成功， C代理会获得350元/只奖励，B代理会获得150元/只奖励，A代理不再享有奖励。
+    </div>
+    {include file="wx_share"/}
+    <script>
+        function validate_comment() {
+            window.location.href = "{:url('index/shop/glist',['agentid'=>$uid])}";
+        }
+    </script>
+</body>
+</html>

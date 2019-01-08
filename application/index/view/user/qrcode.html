@@ -1,0 +1,30 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>我的二维码</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-qrcode">
+
+        <div class="qrcode-img">
+            <img style="position: absolute ;left: 0px;top: 0px;" src="/static/home/images/qrcode.gif" />
+            <img style="position: absolute ;left: 0px;top: 0px;"  src="{:url('/index/user/getqrcode')}" />
+        </div>
+        <div class="qrcode-txt">
+            我在食花百草羊认领<br />
+            <span>{$lambnum}</span>只羊<br />
+            已经超越了<span>{$exceed}%</span>牧场主
+        </div>
+
+    </div>
+    <!--内容主体结束-->
+
+</body>
+</html>

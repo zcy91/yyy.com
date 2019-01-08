@@ -1,0 +1,136 @@
+{include file="header"/}
+    <script type="text/javascript" src="/static/home/cityselect/js/jquery.cityselect.js"></script>
+    <script type="text/javascript">
+            $(function(){
+                {if !empty($myaddress.province)}
+                $("#city").citySelect({prov:"{$myaddress.province}", city:"{$myaddress.city}", dist:"{$myaddress.area}"});
+                {else/}
+                $("#city").citySelect();
+                {/if}
+                
+                
+                
+            });
+    </script>
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>新增地址</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-addaddress">
+        <h1>联系人</h1>
+        <!--联系人信息-->
+        <ul class="addaddress-user">
+            <li><p>姓名：</p>
+                <input type="text" name='name'  value="{if !empty($myaddress.name)}{$myaddress.name}{/if}" placeholder="请填写联系人姓名" />
+                <input type="hidden" name='id' value="{if !empty($myaddress.id)}{$myaddress.id}{/if}" />
+            </li>
+            <li>
+                <p></p>
+                <div class="user-gender">
+                    <label>
+                        <input type="radio" name="sex" value='1' {if !empty($myaddress.sex) && $myaddress.sex==1} checked="checked"{/if} /><span>先生</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="sex" value='2' {if !empty($myaddress.sex) && $myaddress.sex==2} checked="checked"{/if} /><span>女士</span>
+                    </label>
+                </div>
+            </li>
+            <li><p>电话：</p><input type="text" name="phone"  onkeyup="this.value=this.value.replace(/[^\d]/g,'') " onafterpaste="this.value=this.value.replace(/[^\d]/g,'') " value="{if !empty($myaddress.phone)}{$myaddress.phone}{/if}" placeholder="请填写联系人手机号" /></li>
+        </ul>
+        <!--联系人信息结束-->
+        <h1>联系人地址</h1>
+        <!--联系人地址-->
+        <ul class="addaddress-user"  id="city">
+            <li>
+                <p>所在省份：</p>
+                <select style="    padding: .2rem 0;font-size:.25rem;height: 100%;width: 75%" id='myprovince' name="province" class="prov"></select>  
+	    </li>
+            <li>
+                <p>所在城市：</p>
+                <select  style="    padding: .2rem 0;font-size:.25rem;height: 100%;width: 75%" id='mycity' name="city" class="city" disabled="disabled"></select> 
+            </li>
+            <li>
+                <p>所在市县：</p>
+                <select  style="    padding: .2rem 0;font-size:.25rem;height: 100%;width: 75%" id='myarea' name="area" class="dist" disabled="disabled"></select> 
+            </li>
+            <li>
+                <p>详细地址：</p>
+                <input type="text" name="detailed" value="{if !empty($myaddress.detailed)}{$myaddress.detailed}{/if}" placeholder="请填写详细地址" />
+            </li>
+        </ul>
+        <!--联系人地址结束-->
+        <!--保存按钮-->
+        <div class="addaddress-btn">
+            <a href="javascript:setAddress();">确认保存</a>
+        </div>
+        <!--保存按钮结束-->
+    </div>
+    <input type="hidden" value="{$sheep_id}" id="sheep_id">
+    <!--内容主体结束-->
+    <script>
+        function setAddress(){
+            var sex = $('input:radio[name="sex"]:checked').val();
+            var id = $('input[name="id"]').val();
+            var name = $('input[name="name"]').val();
+            var phone = $('input[name="phone"]').val();
+            var province = $('#myprovince').val();
+            var city = $('#mycity').val();
+            var area = $('#myarea').val();
+            var detailed = $('input[name="detailed"]').val();
+            var sheep_id = $('#sheep_id').val();
+            if(name.length==0){
+                layer.msg('姓名不能为空');
+                return;
+            }else if(phone.length==0){
+                layer.msg('手机不能为空');
+                return;
+            }else if(detailed.length==0){
+                layer.msg('详细地址不能为空');
+                return;
+            }
+            else if (phone.length > 15){
+                layer.msg('请填写正确手机号码');
+                return false;
+            }
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/addaddress")}',
+                    data:{
+                        id:id,
+                        sex:sex,
+                        name:name,
+                        phone:phone,
+                        province:province,
+                        city:city,
+                        area:area,
+                        detailed:detailed,
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg,function(){
+                            //关闭后的操作
+                            window.location.href='{:url("/index/user/soldsheep")}'+"?id="+sheep_id+"&sheep_id="+sheep_id;
+                                //window.history.back();
+                            });
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+            
+        }
+    </script>
+</body>
+</html>

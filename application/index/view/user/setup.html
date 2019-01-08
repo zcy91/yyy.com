@@ -1,0 +1,71 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>设置</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-setup">
+        <h1>帐号绑定</h1>
+        <!--功能列表-->
+        <ul class="setup-ftlist">
+            <li>
+                <a href="{:url('/index/user/cgphone')}">
+                    <p>手机号</p>
+                    <i class="fa fa-angle-right"></i>
+                    <span>{if !empty($member.mobile)}{$member.mobile}{else/}未绑定{/if}</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <p>微信号</p>
+                    <i class="fa fa-angle-right"></i>
+                    {if !empty($member.openid)}
+                        <span>已绑定</span>
+                    {else/}
+                        <span onclick="window.location='{:url('/index/login/login',array('state'=>'wxbd'))}'">点击绑定</span>
+                    {/if}
+                </a>
+            </li>
+        </ul>
+        <!--功能列表结束-->
+        <h1>安全问题</h1>
+        <!--功能列表-->
+        <ul class="setup-ftlist">
+            <li>
+                <a href="{:url('/index/user/cgpassword')}">
+                    <p>登录密码</p>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/paypassword')}">
+                    <p>支付密码</p>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/perfectinfo')}">
+                    <p>完善信息</p>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+
+        </ul>
+        <!--密码问题结束-->
+        <!--退出按钮-->
+        <div class="setup-btn">
+            <a href="{:url('/index/login/login',array('exit'=>1))}">退出登录</a>
+        </div>
+        <!--退出按钮结束-->
+    </div>
+    <!--内容主体结束-->
+
+</body>
+</html>

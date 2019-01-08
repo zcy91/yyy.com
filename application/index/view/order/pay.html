@@ -1,0 +1,367 @@
+{include file="header"/}
+    <script type="text/javascript">
+	//调用微信JS api 支付
+	function jsApiCall()
+	{
+		WeixinJSBridge.invoke(
+			'getBrandWCPayRequest',
+                        {if !empty($jsApiParameters)}{$jsApiParameters}{else /}''{/if},
+			function(res){
+				WeixinJSBridge.log(res.err_msg);
+				//alert(res.err_code+res.err_desc+res.err_msg);
+			}
+		);
+	}
+
+	function callpay()
+	{
+		if (typeof WeixinJSBridge == "undefined"){
+		    if( document.addEventListener ){
+		        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+		    }else if (document.attachEvent){
+		        document.attachEvent('WeixinJSBridgeReady', jsApiCall); 
+		        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+		    }
+		}else{
+		    jsApiCall();
+		}
+	}
+    function onPaySuccess(){
+        window.location.href='{:url("/index/user/user")}'
+    }
+
+    function onPayFail(){
+       layer.msg('付款失败');
+    }
+    $(function(){
+
+        $(":radio").click(function(){
+            var paytype = $('input:radio[name="paytype"]:checked').val();
+            if(paytype!=1){
+                $("#paypwd").hide();
+            }else{
+                $("#paypwd").show();
+            }
+        })
+        })
+
+        function url() {
+            window.location.href="{:url('/index/user/paypassword')}";
+        }
+        function mypay(){
+            var oid = $("#oid").val();
+            var paytype = $('input:radio[name="paytype"]:checked').val();
+            if(paytype==2){
+
+                {if !empty($isjsp)}
+                layer.msg('微信支付需要先绑定微信',{anim:6},function(){
+                    window.location.href='/index/user/setup';
+                });
+                {else/}
+                callpay(); 
+                 window.location.href='{:url("/index/user/user")}'
+
+                    {/if}
+                    }else if(paytype == 6){
+                    var params = JSON.stringify({oid:oid});
+                    try{
+                        switch(navigator.userAgent){
+                            case "oioos_webkit_ios":
+                                //app ios
+
+                                window.location.href = "ios://pay?"+params;
+                                break;
+                                return false;
+
+                            case "Yang_Webview":
+                            //兼容第一个版本的羊
+                            case "oioos_webkit_android":
+                                //app android
+                                oioos.pay(params);
+                                break;
+
+                            default:
+
+                        }
+                    }catch(e){
+                        console.log('pay error', e);
+                    }
+            }else if(paytype==1){
+                var oid = $("input[name='oid']").val();
+                var paypwd = $("#paypassword").val();
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/order/pay")}',
+                    data:{
+                        paytype:paytype,
+                        oid:oid,
+                        paypwd:paypwd
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.data,{anim:0},function(){
+                            //关闭后的操作
+                            window.location.href='{:url("/index/user/user")}'
+                            });
+                        }else{
+                            layer.msg(data.data,{anim:6});
+                            if(data.url){
+                               if(data.type==0) {
+                                   setTimeout(window.location.href='{:url("/index/user/paypassword")}',1500);
+                               }else{
+                                   setTimeout(window.location.href='{:url("/index/user/perfectinfo")}',1500);
+                               }
+
+                            }
+                        }
+
+                    },
+                    error: function(xhr){
+                        layer.msg('error',{anim:6});
+                    }
+                });
+            }else if(paytype==3){
+                    $("#paypwd").hide();
+                     document.getElementById("formid").submit();
+            }else if(paytype == 7){
+                    $("#paypwd").hide();
+                    var WIDout_trade_no = $("#WIDout_trade_no").val();
+                    var amout = $("#amount").val();
+                    var params = JSON.stringify({WIDout_trade_no:WIDout_trade_no, amount:amout });
+                    try{
+                        switch(navigator.userAgent){
+                            case "oioos_webkit_ios":
+                                //app ios
+                                window.location.href = "ios://alipay_app?" + params;
+                                break;
+
+                            case "Yang_Webview":
+                            //兼容第一个版本的羊
+                            case "oioos_webkit_android":
+                                //app android
+                                if(typeof oioos != 'undefined'){
+                                    oioos.alipay_app(params);
+                                }else if(typeof yangJs != 'undefined'){
+                                    yangJs.alipay_app(params);
+                                }
+
+                                break;
+
+                            default:
+                                //其他浏览器：webkit safari wexin(公众号)
+                                console.log("pay data is", params);
+                        }
+                    }catch(e){
+                        console.log('pay error', e);
+                    }
+            }
+        }
+	</script>
+</head>
+<body style="position:relative;">
+<input type="hidden" value="{$oid}" id="oid">
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;"onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>支付</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-pay">
+        <!--羊羔信息-->
+        {volist name="myorder" id="vo"}
+        <div class="pay-info">
+            <div class="info-photo">
+                <img src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" style="position: unset"/>
+            </div>
+            <div class="info-detail">
+                <div class="detail-name" style="margin-top: .25rem">羊羔名字：<span>{$vo.lambname}</span></div>
+                <div class="detail-cycle">养殖周期：<span>{$vo.cycle}</span><u>天</u></div>
+            </div>
+        </div>
+        {/volist}
+        <!--羊羔信息结束-->
+        <!--寄语-->
+        <div class="pay-message">
+            {$myorder.0.message}
+        </div>
+        <!--寄语结束-->
+        <!--订单详情-->
+        <div class="pay-order">
+            <h1>订单详情</h1>
+            <ul>
+                <li>
+                    <span>订单编号：</span>
+                    <u>{$myorder.0.ordersn}</u>
+                </li>
+                <li>
+                    <span>订单金额：</span>
+                    <u><i class="fa fa-yen"></i>{$myorder.0.money}</u>
+                </li>
+                <li>
+                    <span>实付款：</span>
+                    <u><i class="fa fa-yen"></i>{$myorder.0.price}</u>
+                    <input type="hidden" id="amount" value="{$myorder.0.price}">
+                </li>
+            </ul>
+        </div>
+        <!--订单详情结束-->
+        <!--订单详情-->
+        <form id="formid" method='post' action="/index/index/alipay">
+        <div class="pay-order">
+            <!--<ul>-->
+            <!--<li>-->
+                <!--<label>-->
+                <!--<span onclick="wap_pay('upacp_wap')">-->
+                    <!--<i class="fa fa-jpy bankcard"></i>-->
+                    <!--银联 WAP-->
+                <!--</span>-->
+                <!--</label>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<label>-->
+
+                    <!--<span  onclick="wap_pay('alipay_wap')">-->
+                         <!--<i class="fa fa-jpy bankcard"></i>-->
+                        <!--支付宝 WAP-->
+                    <!--</span>-->
+                <!--</label>-->
+            <!--</li>-->
+            <!--<span class="up" onclick="wap_pay('bfb_wap')">百度钱包 WAP</span>-->
+            <!--<span class="up" onclick="wap_pay('jdpay_wap')">京东支付 WAP</span>-->
+            <!--<span class="up" onclick="wap_pay('yeepay_wap')">易宝支付 WAP</span>-->
+            <!--<li>-->
+                <!--<label>-->
+
+                    <!--<span class="up" onclick="wap_pay('wx_pub')">-->
+                         <!--<i class="fa fa-jpy bankcard"></i>-->
+                        <!--微信浏览器内公众号支付 WAP-->
+                    <!--</span>-->
+                <!--</label>-->
+            <!--</li>-->
+            </ul>
+            <h1>支付方式</h1>
+            <ul>
+                {if $paystr == 'wechat' }
+                <li>
+                    <label>
+                        <span><i class="fa fa-wechat weixin"></i>微信支付</span>
+                        <input type="radio" name="paytype" value="2" />
+                    </label>
+                </li>
+                {/if}
+                {if $paystr != 'wechat' }
+                <li>
+                    <label>
+                        <span><i class="fa fa-wechat weixin"></i>微信支付</span>
+                        <input type="radio" name="paytype" value="6" />
+                    </label>
+                </li>
+                {/if}
+                {if $paystr == 'wechat' }
+                <li>
+                    <label>
+                        
+                            <input type="hidden" id="WIDout_trade_no" name="WIDout_trade_no" value="{$myorder.0.ordersn}" />
+                            <span><i class="fa fa-paypal bankcard" style="color: #00A0E8;"></i>支付宝web支付</span>
+                            <input type="radio"  name="paytype" value="3" />
+                        
+                    </label>
+                </li>
+                {else/}
+                <li>
+                    <label>
+
+                        <input type="hidden" id="WIDout_trade_no" name="WIDout_trade_no" value="{$myorder.0.ordersn}" />
+                        <span><i class="fa fa-paypal bankcard" style="color: #00A0E8;"></i>支付宝APP支付</span>
+                        <input type="radio"  name="paytype" value="7" />
+
+                    </label>
+                </li>
+                {/if}
+                <li>
+                    <label>
+                        <span><i class="fa fa-jpy bankcard"></i>余额支付</span>
+                        <input type="radio"  checked="checked"  name="paytype" value="1" />
+                    </label>
+                </li>
+                <li id="paypwd">
+                    <label>
+                        <span><i class="fa fa-lock bankcard"></i>支付密码</span>
+                        <input type="password"  name="paypwd" id="paypassword" style="width: 4rem;line-height: .25rem;font-size: .25rem" placeholder="请输入支付密码"/>
+                    </label>
+                </li>
+                
+            </ul>
+        </div>
+            </form>
+        <!--订单详情结束-->
+        <!--支付按钮-->
+        <div class="pay-btn">
+            <span>提示：一小时内未支付 订单将自动取消</span>
+            <input type="hidden" name="oid" value="{$myorder.0.id}" />
+            <input type="button"  style="display: block;width: 3rem;margin: 0 auto;padding: .2rem 0;text-align: center;font-size: .3rem;color: #fff;border-radius: .1rem;background: #f66c48"  onclick="mypay()" value="点击支付"/>
+        </div>
+        <!--支付按钮结束-->
+    </div>
+    <!--内容主体结束-->
+    <script>
+
+        function wap_pay(channel) {
+
+
+            if(channel == 'alipay_wap'){
+                var YOUR_URL = "{:url('index/index/alipay_in_weixin')}";
+                pingpp.setAPURL("{:url('index/index/alipay_in_weixin')}");
+
+        }else{
+                var YOUR_URL = "{:url('index/order/pingpay')}";
+        }
+            if(channel=='wx_pub'){
+                {if empty($openid)}{
+                    layer.confirm("确认要微信支付吗，支付前先先绑定微信号", { title: "微信号未绑定" }, function (index) {
+                        layer.close(index);
+//
+                        window.location.href = "{:url('index/user/setup')}"
+                    });
+
+                }
+                {/if}
+
+            }
+
+            var amount = document.getElementById('amount').value * 100;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", YOUR_URL, true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send(JSON.stringify({
+                channel: channel,
+                amount: amount,
+                oid:{$oid}
+            }));
+// 参数一：支付参数 charge/order/recharge
+// 参数二：支付结果回调
+
+
+            xhr.onreadystatechange = function () {
+
+
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    pingpp.createPayment(xhr.responseText, function(result, err) {
+                        if(result == 'success'){
+                        alert(111)
+                    }
+                        console.log(result);
+                        console.log(err.msg);
+                        console.log(err.extra);
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>

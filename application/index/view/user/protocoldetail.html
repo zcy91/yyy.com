@@ -1,0 +1,24 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>委托领养协议</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-protocol">
+<!--        <img src="/static/home/images/ht-one.jpg" />
+        <img src="/static/home/images/ht-two.jpg" />-->
+        <img src="{:url('/index/user/getprotocol',array('oid'=>$oid))}" />
+        {if !empty($isorder['autograph'])}
+            <img style="width: 1rem;height: 1rem;float: right;right :.4rem;bottom:.2rem;position: absolute;margin-right: .5rem" src="{php} echo imgUrl($isorder['autograph']);{/php}" />
+        {/if}
+    </div>
+
+</body>
+</html>

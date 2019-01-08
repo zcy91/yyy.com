@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>个人信息</title>
+	<meta name="renderer" content="webkit">	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">	
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="format-detection" content="telephone=no">	
+	<link rel="stylesheet" type="text/css" href="/static/common/layui/css/layui.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/common/bootstrap/css/bootstrap.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/common/global.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/css/personal.css" media="all">
+</head>
+<body>
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<header class="larry-personal-tit">
+			<span>个人信息</span>
+		</header><!-- /header -->
+		<div class="larry-personal-body clearfix">
+			
+				<div class="layui-form-item">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-block">  
+						<input type="text" name="username"  autocomplete="off"  class="layui-input" value="{if !empty($myadmin.username)}{$myadmin.username}{/if}" >
+                                                <input type="hidden" name="admin_id" value="{if !empty($myadmin.admin_id)}{$myadmin.admin_id}{/if}" >
+                                        </div>
+				</div>
+                                <div class="layui-form-item">
+					<label class="layui-form-label">所属角色</label>
+					<div class="layui-input-block">
+                                            <form class="layui-form col-lg-5" action="" method="post">
+                                            <select name="level_id"  id="adminlevel">
+							{volist name="myadmin_level" id="vo"}
+                                                            <option value="{$vo.id}" {if !empty($myadmin.level_id) && $vo.id==$myadmin.level_id} selected="selected"{/if}>{$vo.name}</option>
+                                                       {/volist}
+						</select>
+                                                
+                                            </form>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">真实姓名</label>
+					<div class="layui-input-block">
+						<input type="text" name="realname"  autocomplete="off" class="layui-input" value="{if !empty($myadmin.realname)}{$myadmin.realname}{/if}"  placeholder="输入真实姓名">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">手机号码</label>
+					<div class="layui-input-block">
+                                            <input type="text" name="tel"  autocomplete="off" class="layui-input" value="{if !empty($myadmin.tel)}{$myadmin.tel}{/if}" placeholder="输入手机号码">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">邮箱</label>
+					<div class="layui-input-block">
+                                            <input type="text" name="email"  autocomplete="off" class="layui-input" value="{if !empty($myadmin.email)}{$myadmin.email}{/if}" placeholder="输入邮箱号码">
+                                        </div>
+				</div>
+                                <div class="layui-form-item">
+					<label class="layui-form-label">密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="pwd"  autocomplete="off" class="layui-input" placeholder="{if !empty($myadmin.pwd)}密码留空为不修改密码{else}输入密码{/if}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">修改头像</label>
+					<div class="layui-input-block">
+						<input type="file" name="file" class="layui-upload-file">
+                                                <img style="width: 36px;height: 36px;" class="myimg" src="{php}if(!empty($myadmin['avatar'])) echo imgUrl($myadmin['avatar']);else echo imgUrl(''){/php}">
+                                                <input type="text"  class="avatar layui-input-block" style="padding-left: 10px;width: 50%;margin-left: 10px;" name="avatar" value="{if !empty($myadmin.avatar)}{$myadmin.avatar}{/if}" >
+                                        </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<button class="layui-btn" onclick="adminadd()" >立即提交</button>
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript" src="/static/common/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script>
+        function adminadd(){
+            var admin_id = $("input[name='admin_id']").val();
+            var realname = $("input[name='realname']").val();
+            var username = $("input[name='username']").val();
+            var tel = $("input[name='tel']").val();
+            var email = $("input[name='email']").val();
+            var avatar = $("input[name='avatar']").val();
+            var level_id = $("#adminlevel").val();
+            var pwd = $("input[name='pwd']").val();
+            $.ajax({
+                type:'post',
+                url:'{:url("/back/admin/adminadd")}',
+                data:{
+                    admin_id:admin_id,
+                    realname:realname,
+                    username:username,
+                    tel:tel,
+                    email:email,
+                    avatar:avatar,
+                    level_id:level_id,
+                    pwd:pwd
+                },
+                datatype:'json',
+                success: function(data){
+                    if(data.type==1){
+                        layer.msg(data.msg);
+                    }else{
+                        layer.msg(data.msg);
+                    }  
+                },
+            });
+        }
+</script>
+<script type="text/javascript">
+	layui.use(['form','upload'],function(){
+         layui.upload({ 
+             url: '/server/fileupload.php',//上传接口 
+             success: function(res){
+                if(res.result){
+                    $('.avatar').val(res.result);
+                    $('.myimg').attr('src','/server/'+res.result);                    
+                }else{
+                    alert('上传失败');
+                }
+              console.log(res.result) 
+            } 
+         });
+
+	});
+</script>
+</body>
+</html>

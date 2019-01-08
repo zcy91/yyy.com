@@ -1,0 +1,31 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>历史记录</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-walletrecord">
+        <ul class="coupon-title">
+            <li style="width: 49.5%;" {if empty($money_type) or $money_type==1} class="ahover" {/if} onclick="window.location.href='{:url('/index/user/walletrecord')}'">余额记录</li>
+            <li style="width: 49.5%;" {if !empty($money_type) or $money_type==2} class="ahover" {/if}  onclick="window.location.href='{:url('/index/user/walletrecord',array('money_type'=>2))}'">积分记录</li>
+        </ul>
+        <div class="walletrecord-list">
+            {volist name='list' id='vo'}
+                <div class="listBox">
+                    <h1>{$vo.remark}{if $vo.vary == 1}<span class="add">+{$vo.money}元</span>{else/}<span class="min">-{$vo.money}元</span>{/if}</h1>
+                    <h2>{php}echo date("Y-m-d H:i",$vo['time']);{/php}<span>余额：{$vo.balance}元</span></h2>
+                </div>
+            {/volist}
+        </div>
+    </div>
+    <!--内容主体结束-->
+
+</body>
+</html>

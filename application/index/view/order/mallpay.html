@@ -1,0 +1,122 @@
+{include file="header"/}
+    <script type="text/javascript">
+	
+        function mypay(){
+            var myaddress = $("#myaddress").html();
+            if(myaddress.length == 0){
+                 layer.msg('请选择收货地址！');
+                 return;
+            }
+            var paytype = $('input:radio[name="paytype"]:checked').val();
+            if(paytype==5){
+                var oid = $("input[name='oid']").val();
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/order/mallpay")}',
+                    data:{
+                        paytype:paytype,
+                        oid:oid
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.data,{anim:0},function(){
+                            //关闭后的操作
+                            window.location.href='{:url("/index/user/user")}'
+                            });
+                        }else{
+                            layer.msg(data.data,{anim:6});
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error',{anim:6});
+                    }
+                });
+            }
+        }
+	</script>
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:window.location.href = '{:url('/index/user/user')}';" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>支付</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-pay">
+        <!--羊羔信息-->
+        {volist name="myorder" id="vo"}
+        <div class="pay-info">
+            <div class="info-photo">
+                <img src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" style="position: unset"/>
+            </div>
+            <div class="info-detail">
+                <div class="detail-name">商品名称：<span>{$vo.gname}</span></div>
+                <div class="detail-cycle">购买数量：<span>{$vo.num}</span></div>
+                <div class="detail-rebate">商品单价：<span style="    font-size: .25rem;    padding-top: .25rem;    color: #808080;">{$vo.price2}</span></div>
+            </div>
+        </div>
+        {/volist}
+        <!--羊羔信息结束-->
+        <!--寄语-->
+        <div class="pay-message">
+            
+        </div>
+        <!--寄语结束-->
+        <!--订单详情-->
+        <div class="pay-order">
+            <h1>订单详情</h1>
+            <ul>
+                <li>
+                    <span>订单编号：</span>
+                    <u>{$myorder.0.ordersn}</u>
+                </li>
+                <li>
+                    <span>订单金额：</span>
+                    <u><i class="fa fa-yen"></i>{$myorder.0.integral}</u>
+                </li>
+            </ul>
+        </div>
+        <!--订单详情结束-->
+         <div class="pay-order">
+            <h1>邮寄地址</h1>
+            <ul>
+                <li  onclick="javascript:location.href='{:url('/index/user/address')}'">
+                    <span>收货地址：</span>
+                    <u  style="margin-left:0.5rem;float: left;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" id="myaddress">{if !empty($isaddress)}{$isaddress.name}({$isaddress.phone}){$isaddress.province}{$isaddress.city}...{/if}</u>
+                    <i style="float: right;" class="fa fa-angle-right ftlist-enter"></i>
+                </li>
+            </ul>
+        </div>
+        <!--订单详情-->
+        <form id="formid" method='post' action="/index/index/alipay">
+        <div class="pay-order">
+            <h1>支付方式</h1>
+            <ul>
+                
+                <li>
+                    <label>
+                        <span><i class="fa fa-jpy bankcard"></i>积分支付</span>
+                        <input type="radio"  checked="checked"  name="paytype" value="5" />
+                    </label>
+                </li>
+                
+            </ul>
+        </div>
+            </form>
+        <!--订单详情结束-->
+        <!--支付按钮-->
+        <div class="pay-btn">
+            <span>提示：一小时内未支付 订单将自动取消</span>
+            <input type="hidden" name="oid" value="{$myorder.0.id}" />
+            <input type="button"  style="display: block;width: 3rem;margin: 0 auto;padding: .2rem 0;text-align: center;font-size: .3rem;color: #fff;border-radius: .1rem;background: #f66c48"  onclick="mypay()" value="点击支付"/>
+        </div>
+        <!--支付按钮结束-->
+    </div>
+    <!--内容主体结束-->
+</body>
+</html>

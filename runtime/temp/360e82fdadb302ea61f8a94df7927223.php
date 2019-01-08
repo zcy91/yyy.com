@@ -1,0 +1,91 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:71:"E:\phpStudy\WWW\yyy.com\public/../application/back\view\set\smsset.html";i:1511426730;}*/ ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>微信设置</title>
+	<meta name="renderer" content="webkit">	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">	
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="format-detection" content="telephone=no">	
+	<link rel="stylesheet" type="text/css" href="/static/common/layui/css/layui.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/common/bootstrap/css/bootstrap.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/common/global.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/css/personal.css" media="all">
+</head>
+<body>
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<header class="larry-personal-tit">
+			<span>阿里大鱼短信接口设置</span>
+		</header><!-- /header -->
+		<div class="larry-personal-body clearfix">
+			<form class="layui-form col-lg-5" action="" method="post">
+				<div class="layui-form-item">
+					<label class="layui-form-label">accessKeyId，<a href="https://ak-console.aliyun.com/">打开阿里</a></label>
+					<div class="layui-input-block">
+						<input type="text" name="access_key_id"  autocomplete="off" class="layui-input" value="<?php if(!empty($smsset['access_key_id'])): ?><?php echo $smsset['access_key_id']; endif; ?>"  placeholder="输入accessKeyId">
+						<input type="hidden" name="id" value="<?php if(!empty($smsset['id'])): ?><?php echo $smsset['id']; endif; ?>" >
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">accessKeySecret，<a href="https://ak-console.aliyun.com/">打开阿里</a></label>
+					<div class="layui-input-block">
+						<input type="text" name="access_key_secret"  autocomplete="off" class="layui-input" value="<?php if(!empty($smsset['access_key_secret'])): ?><?php echo $smsset['access_key_secret']; endif; ?>"  placeholder="输入accessKeySecret">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">短信签名</label>
+					<div class="layui-input-block">
+						<input type="text" name="sms_autograph"  autocomplete="off" class="layui-input" value="<?php if(!empty($smsset['sms_autograph'])): ?><?php echo $smsset['sms_autograph']; endif; ?>"  placeholder="输入短信签名">
+					</div>
+				</div>
+                                
+                                <div class="layui-form-item">
+					<label class="layui-form-label">短信模板编号</label>
+					<div class="layui-input-block">
+                                            <input type="text" name="sms_templet"  autocomplete="off" class="layui-input" value="<?php if(!empty($smsset['sms_templet'])): ?><?php echo $smsset['sms_templet']; endif; ?>" placeholder="输入短信模板编号">
+					</div>
+				</div>
+				<div class="layui-form-item">
+                                    <label class="layui-form-label">接入状态</label>
+                                    <div class="layui-input-block">
+                                        <input type="radio" name="status" lay-filter="open" <?php if(!empty($smsset['status']) || $smsset['status'] == 0): ?> checked="checked"<?php endif; ?> value="0" title="等待接入"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><span>等待接入</span></div>
+                                        <input type="radio" name="status" lay-filter="open" <?php if(!empty($smsset['status']) && $smsset['status'] == 1): ?> checked="checked"<?php endif; ?> value="1" title="已接入"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><span>已接入</span></div>
+                                    </div>
+                                </div>
+
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+<script type="text/javascript" src="/static/common/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript">
+	layui.use(['form','upload'],function(){
+         var form = layui.form();
+         layui.upload({ 
+            url: '/server/fileupload.php',//上传接口 
+             success: function(res){
+                if(res.result){
+                    $('.avatar').val(res.result);
+                    $('.myimg').attr('src','/server/'+res.result);                    
+                }else{
+                    alert('上传失败');
+                }
+              console.log(res.result) 
+            } 
+         });
+
+	});
+</script>
+</body>
+</html>

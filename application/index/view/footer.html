@@ -1,0 +1,33 @@
+        <ul>
+            <li {if $controller=='index'}class="ahover"{/if}>
+                <a href="{:url('/index/index/index')}">
+                    <i class="fa fa-home"></i>
+                    <p>我的牧场</p>
+                </a>
+            </li>
+            <li {if $controller=='shop'}class="ahover"{/if}>
+                <a href="{:url('/index/shop/glist')}">
+                    <i class="fa fa-shopping-bag"></i>
+                    <p>我要领养</p>
+                </a>
+            </li>
+            <li {if $controller=='discovery'}class="ahover"{/if}>
+                <a href="{:url('/index/discovery/community')}"> <!--{:url('/index/discovery/index')}-->
+                    <i class="fa fa-globe"></i>
+                    <p>我的社区</p>
+                </a>
+            </li>
+            <!--<li>
+                <a href="javascript:;">
+                    <i class="fa fa-comments"></i>
+                    <p>羊羊社区</p>
+                </a>
+            </li>-->
+            <li {if $controller=='user'}class="ahover"{/if}>
+                <a href="{:url('/index/user/user')}">
+                    <i class="fa fa-user"></i>
+                    <p>我的牧场</p>
+                </a>
+            </li>
+        </ul>
+{include file="share"/}

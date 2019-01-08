@@ -1,0 +1,88 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>收货地址</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-address">
+       <ul>
+           {volist name='list' id='vo'}
+           <li id='li_{$vo.id}'>
+               <input style="display:inline;float: left;margin: 0.35rem 0.25rem 0.35rem 0.05rem;" type="radio" name="defaults" {if $vo.defaults==1}checked="checked"{/if} onclick="setDefaults({$vo.id})" >
+                <div style=" width: 80%;display:inline-block">
+                    <div  onclick="javascript:window.location.href='{:url('/index/user/addaddress',array('id'=>$vo.id))}'" class="address-name">
+                        <p>{$vo.name}</p>
+                        <span>{$vo.phone}</span>
+                    </div>
+                    <div class="address-detail">
+                        <i class="fa fa-map-marker"></i><span>{$vo.province}{$vo.city}{$vo.area}{$vo.detailed}</span>
+                    </div>
+               </div>
+                <span style="display:inline;float: right;margin: 0.35rem 0.05rem 0.35rem 0.25rem;font-size: .25rem;color: #828282;" onclick='del_address({$vo.id})'>
+                    <i class="fa fa-window-close"></i>
+                </span>
+           </li>
+           {/volist}
+       </ul>
+    </div>
+    <!--内容主体结束-->
+    <!--地址底部-->
+        <a href="{:url("/index/user/addaddress")}" class="address-footer"><i class="fa fa-plus-circle"></i>添加新地址</a>
+    <!--地址底部结束-->
+    <script>
+        function setDefaults(id){
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/setdefaults")}',
+                    data:{
+                        id:id
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg);
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+        }
+        function del_address(id){
+            var msg = "您真的确定要删除吗？\n\n请确认！";
+                if (confirm(msg)==true){
+                }else{
+                return false;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/deladdress")}',
+                    data:{
+                        id:id
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            $('#li_'+id).remove();
+                            layer.msg(data.msg);
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

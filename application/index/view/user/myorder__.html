@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>我的订单 - 食花百草羊</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="/static/home/css/base.css" rel="stylesheet" />
+    <link href="/static/home/css/currency.css" rel="stylesheet" />
+    <link href="/static/home/css/index.css" rel="stylesheet" />
+    <script src="/static/home/js/jquery1.10.2.js"></script>
+    <script src="/static/home/js/common.js"></script>
+    <script src="/static/home/js/fontSize.js"></script>
+    <script src="/static/home/layer/layer.js"></script>
+    <link href="/static/home/css/font-awesome.css" rel="stylesheet" />
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>我的订单</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-myorder">
+
+        <!--订单分类-->
+        <ul class="myorder-class">
+            <li class="ahover">
+                <a href="javascript:;">全部</a>
+            </li>
+            <li>
+                <a href="javascript:;" onclick="getMyorder(1)">已付款</a>
+            </li>
+            <li>
+                <a href="javascript:;" onclick="getMyorder(0)">待付款</a>
+            </li>
+        </ul>
+        <!--订单分类结束-->
+        <!--订单列表-->
+        <ul class="myorder-list">
+            <li class="ahover">
+                {volist name='list' id='vo'}
+                <div class="listBox">
+                    <div class="order-numb">
+                        <p>订单编号：<span>{$vo.ordersn}</span></p>
+                        <p>{if $vo.status==1}已付款{elseif $vo.status==0 /}未付款{/if}</p>
+                    </div>
+                    <a href="{:url('/index/user/orderdetail',array('oid'=>$vo.id))}" class="order-info">
+                        <img src="/static/home/images/sheep.jpg" class="info-photo" />
+                        <div class="info-detail">
+                            <p>{$vo.gname}</p>
+                            <span>预计年化收益率：{$vo.percentage}%</span>
+                            <span>养殖周期：{$vo.cycle}天</span>
+                        </div>
+                        <div class="info-numb">
+                            X<span>{$vo.num}</span>
+                        </div>
+                    </a>
+                    <div class="order-time">
+                        <p><span>{php}echo date("Y-m-d H:i",$vo['paytime']);{/php}</span></p>
+                        <p>共计：<i class="fa fa-yen"></i><span>{$vo.money}</span></p>
+                    </div>
+                </div>
+                {/volist}
+            </li>
+            <li id="li_status_1">
+            </li>
+            <li id="li_status_0">
+            </li>
+        </ul>
+        <!--订单列表结束-->
+
+    </div>
+    <!--内容主体结束-->
+    <script>
+        function getMyorder(status){
+            var page = 1;
+            $.ajax({
+                type: 'POST',
+                url: '{:url("/index/user/getmyorder")}',
+                data:{
+                    status:status,
+                    page:page
+                },
+                dataType:'json',
+                success: function(data){
+                    if(data.type==1){
+                        var html = '';
+                        $.each(data.data,function(index,value){
+                            html+='<div class="listBox">';
+                            html+='    <div class="order-numb">';
+                            html+='        <p>订单编号：<span>'+value.ordersn+'</span></p>';
+                            if(status==1){
+                                html+='        <p>已付款</p>';
+                            }else if(status==0){
+                                html+='        <p>未付款</p>';
+                            }
+                            html+='    </div>';
+                            html+='    <a href="/index/user/orderdetail/oid/'+value.id+'" class="order-info">';
+                            html+='        <img src="/static/home/images/sheep.jpg" class="info-photo" />';
+                            html+='        <div class="info-detail">';
+                            html+='            <p>'+value.gname+'</p>';
+                            html+='            <span>预计年化收益率：'+value.percentage+'%</span>';
+                            html+='            <span>养殖周期：'+value.cycle+'天</span>';
+                            html+='        </div>';
+                            html+='        <div class="info-numb">';
+                            html+='            X<span>'+value.num+'</span>';
+                            html+='        </div>';
+                            html+='    </a>';
+                            html+='    <div class="order-time">';
+                            html+='        <p><span>'+formatDateTime(value.paytime)+'</span></p>';
+                            html+='        <p>共计：<i class="fa fa-yen"></i><span>'+value.money+'</span></p>';
+                            html+='    </div>';
+                            html+='</div>';
+                        });
+                        $("#li_status_"+status).html(html);
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                },
+                error: function(xhr){
+                    layer.msg('error');
+                }
+            });
+        }
+        function formatDateTime(timeStamp) {   
+            var date = new Date();  
+            date.setTime(timeStamp * 1000);  
+            var y = date.getFullYear();      
+            var m = date.getMonth() + 1;      
+            m = m < 10 ? ('0' + m) : m;      
+            var d = date.getDate();      
+            d = d < 10 ? ('0' + d) : d;      
+            var h = date.getHours();    
+            h = h < 10 ? ('0' + h) : h;    
+            var minute = date.getMinutes();    
+            var second = date.getSeconds();    
+            minute = minute < 10 ? ('0' + minute) : minute;      
+            second = second < 10 ? ('0' + second) : second;     
+            return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;      
+        };   
+    </script>
+</body>
+</html>

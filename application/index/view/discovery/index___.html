@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>社区 - 食花百草羊</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="/static/home/css/base.css" rel="stylesheet" />
+    <link href="/static/home/css/currency.css" rel="stylesheet" />
+    <link href="/static/home/css/index.css" rel="stylesheet" />
+    <script src="/static/home/js/jquery1.10.2.js"></script>
+    <script src="/static/home/js/common.js"></script>
+    <script src="/static/home/js/fontSize.js"></script>
+    <script src="/static/home/layer/layer.js"></script>
+    <link href="/static/home/css/font-awesome.css" rel="stylesheet" />
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>发现</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-discovery">
+        <!--置顶文章-->
+        <a href="https://v.qq.com/x/page/f0340njqnqo.html" class="discovery-title">
+            <img src="/static/home/images/disc-1.jpg" />
+        </a>
+        <!--置顶文章结束-->
+        <!--活动列表-->
+        <ul class="discovery-list">
+            {volist name='list' id= 'vo'}
+            <li>
+                <a href="{$vo.site}">
+                    <img src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" />
+                </a>
+            </li>
+            {/volist}
+        </ul>
+        <!--活动列表结束-->
+    </div>
+    <!--内容主体结束-->
+    <!--公共底部-->
+    <div class="m-footer">
+        {include file="footer"/}
+    </div>
+    <!--公共底部结束-->
+</body>
+</html>

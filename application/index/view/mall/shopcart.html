@@ -1,0 +1,156 @@
+{include file="header"/}
+    <link href="/static/home/css/swiper-3.3.1.min.css" rel="stylesheet" />
+    <script src="/static/home/js/swiper-3.3.1.jquery.min.js"></script>
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>积分商城</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-spcart">
+        <div class="spcart-tips">已加购商品<a href="javascript:;">编辑</a></div>
+        <form class="layui-form col-lg-5" id="yourformid">
+        <ul class="spcart-list">
+            {if !empty($list)}
+            {volist name='list' id='vo'}
+            <li id="li_{$vo.id}">
+                <i class="fa fa-dot-circle-o"></i>
+                <a href="shop-detail.html" class="list-photo"><img src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" /></a>
+                <div class="list-info" style="position: relative;">
+                    <p>{$vo.gname}</p>
+                    <span style=" position: absolute;  top: -0.6rem; right: 0;float: right;font-size: .25rem;color: #828282;" onclick='del_cookie({$vo.id})'>
+                        <i class="fa fa-window-close"></i>
+                    </span>
+                    <span>羊肉很好吃，又健康，肥而不腻，保健养生。</span>
+                    <input type="hidden" id='price_{$vo.id}' value="{$vo.price2}"> 
+                    <b>积分：<u id='prices_{$vo.id}' class="pricesarr">{$vo.price2s}</u></b>
+                    <div class="info-btn">
+                        <input type="button" value="+"  onclick="setnum(2,{$vo.id})" class="add" />
+                        <input type="text" id="numb_{$vo.id}" name='num[{$vo.id}]' value="{$vo.num}" class="text" />
+                        <input type="button" value="-"  onclick="setnum(1,{$vo.id})" class="min" />
+                    </div>
+                </div>
+            </li>
+            {/volist}
+            {else/}
+            {/if}
+        </ul>
+        </form>
+    </div>
+    <!--内容主体结束-->
+    <!--购买底部-->
+    <div class="spcart-footer">
+        <i class="fa fa-circle-o"></i>
+        <span>总计积分：<u id="totalprice">{$total}</u></span>
+        <a href="javascript:addmallorder();">去结算</a>
+    </div>
+    <!--购买底部结束-->
+<script>
+        function setnum(id,gid){
+            var price=$('#price_'+gid).val();
+            var num =$('#numb_'+gid).val();
+            var pricesarr=0;
+            if(id==1){
+                var nums=parseInt(num)-1;
+                if(nums<=0){nums=1};
+                var prices=nums*price;
+                $('#numb_'+gid).val(nums);
+                $('#prices_'+gid).html(prices.toFixed(2));
+            }else{
+                var nums=parseInt(num)+1;
+                if(nums<=0){nums=1};
+                var prices=nums*price;
+                $('#numb_'+gid).val(nums);
+                $('#prices_'+gid).html(prices.toFixed(2));
+            }
+            $(".pricesarr").each(function() {
+                   pricesarr+= parseInt($(this).html());
+            });
+            $('#totalprice').html(toDecimal2(pricesarr));
+        }
+        
+        //制保留2位小数，如：2，会在2后面补上00.即2.00 
+        function toDecimal2(x) { 
+         var f = parseFloat(x); 
+         if (isNaN(f)) { 
+         return false; 
+         } 
+         var f = Math.round(x*100)/100; 
+         var s = f.toString(); 
+         var rs = s.indexOf('.'); 
+         if (rs < 0) { 
+         rs = s.length; 
+         s += '.'; 
+         } 
+         while (s.length <= rs + 2) { 
+         s += '0'; 
+         } 
+         return s; 
+        } 
+        //提交购物车
+        function addmallorder(){
+            //判断用户是否已经登录
+            {if !empty($memberid)}
+                $.ajax({
+                    type: 'POST',
+                    url: '/index/order/addmallorder',
+                    data:$('#yourformid').serialize(),
+                    success: function(data){
+                         if(data.type==1){
+                            layer.msg(data.msg,{anim:0},function(){
+                                //关闭后的操作
+                                window.location.href='/index/order/mallpay/oid/'+data.oid;
+                                });
+                        }else{
+                            layer.msg(data.msg);
+                        }
+
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+            {else/}
+                layer.msg('尚未登录，请先登录',{anim:0},function(){
+                    //关闭后的操作
+                    window.location.href='/index/login/login';
+                });
+            {/if}
+            
+        }
+        
+        function del_cookie(id){
+            var msg = "您真的确定要删除吗？\n\n请确认！";
+                if (confirm(msg)==true){
+                }else{
+                return false;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/mall/delcookie")}',
+                    data:{
+                        id:id
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            $('#li_'+id).remove();
+                            layer.msg(data.msg);
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

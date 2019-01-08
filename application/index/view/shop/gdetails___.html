@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>提交订单 - 食花百草羊</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="/static/home/css/base.css" rel="stylesheet" />
+    <link href="/static/home/css/currency.css" rel="stylesheet" />
+    <link href="/static/home/css/index.css" rel="stylesheet" />
+    <script src="/static/home/js/jquery1.10.2.js"></script>
+    <script src="/static/home/js/common.js"></script>
+    <script src="/static/home/js/fontSize.js"></script>
+    <script src="/static/home/layer/layer.js"></script>
+    <link href="/static/home/css/font-awesome.css" rel="stylesheet" />
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>提交领养</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-placeOD">
+        <!--羊羔名字-->
+        <div class="placeOD-name">
+            <p>{$details.gname}</p>
+            <span><i class="fa fa-map-marker"></i>内蒙古</span>
+        </div>
+        <!--羊羔名字结束-->
+        <!--羊羔信息-->
+        <div class="placeOD-info">
+            <div class="info-photo">
+                <img src="{php}if(!empty($details['img'])) echo imgUrl($details['img']);else echo imgUrl(''){/php}" />
+            </div>
+            <div class="info-detail">
+                <div class="detail-money"><i class="fa fa-yen"></i><span  class="price">{$details.price}</span><u>/ 只</u></div>
+                <div class="detail-cycle">养殖周期：<span>{$details.cycle}</span><u>天</u></div>
+                <div class="detail-rebate"><span>{$details.percentage}%</span><u>预计年化收益率</u></div>
+            </div>
+        </div>
+        <!--羊羔信息结束-->
+        <form name="input" action="{:url('/index/order/addorder')}" method="post">
+        <!--购买数量-->
+        <div class="placeOD-buy">
+            <div class="buy-sum">
+                <p>总价</p>
+                <span><i class="fa fa-yen"></i><u class="prices">{$details.price}</u></span>
+            </div>
+            <div class="buy-numb">
+                <p>购买数量</p>
+                <div class="numb-ob">
+                    <input type="button" onclick="setnum(1)"  value="-" class="min" />
+                    <input type="text"  name='num' class="numb"  value="1"  />
+                    <input type="button" onclick="setnum(2)"  value="+" class="add" />
+                </div>
+                <span>剩余数量：<u>{$details.stock}</u>只</span>
+            </div>
+        </div>
+        <!--购买数量结束-->
+        <!--购买按钮-->
+        <div class="placeOD-btn">
+            <input type="hidden" name='gid' value='{$details.id}'/>
+            <input style="    display: block;
+    width: 3rem;
+    margin: 0 auto;
+    padding: .2rem 0;
+    text-align: center;
+    font-size: .3rem;
+    color: #fff;
+    border-radius: .1rem;
+    background: #83ae3f;" type="submit" value="点击购买" />
+        </div>
+        </form>
+        <!--购买按钮结束-->
+        <!--提示语-->
+        <div class="placeOD-tips">
+            <p><span>温馨提示：</span>当您认领食花百草羊（数量≥1只）后，将成为尊贵牧场主，获得专属于您的牧场，与我们共享那片草原的使用权。具体包括：</p>
+            <p>1.草原深度游高级折扣（服务包括：使用蒙古包、住宿、餐饮、出行、私家旅行路线规划、资深导游陪同讲解等）；</p>
+            <p>2.购买食花百草羊品牌下产品享受优惠折扣。</p>
+
+            <h1>
+                认领羊只数量不同，所享受的折扣会有所差别，但服务质量等同。<span>详询可致电：400-833-6836</span>
+            </h1>
+        </div>
+        <!--提示语结束-->
+    </div>
+    <!--内容主体结束-->
+    <script>
+        function setnum(id){
+            var price=$('.price').html();
+            var num =$('.numb').val();
+            if(id==1){
+                var nums=parseInt(num)-1;
+                if(nums<=0){nums=1};
+                var prices=nums*price;
+                $('.numb').val(nums);
+                $('.prices').html(prices.toFixed(2));
+            }else{
+                var nums=parseInt(num)+1;
+                if(nums<=0){nums=1};
+                var prices=nums*price;
+                $('.numb').val(nums);
+                $('.prices').html(prices.toFixed(2));
+            }
+        }
+    </script>
+</body>
+</html>

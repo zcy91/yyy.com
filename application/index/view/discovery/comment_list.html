@@ -1,0 +1,253 @@
+{include file="header"/}
+    <link rel="stylesheet" type="text/css" href="/static/home/css/wx.css" />
+    <link rel="stylesheet" type="text/css" href="/static/home/css/page_mp_article_improve_combo322696.css">
+<body id="activity-detail" class="zh_CN mm_appmsg not_in_mm">
+    <div id="js_article" class="rich_media">
+        
+        <div id="js_top_ad_area" class="top_banner" style="display: none;">
+ 
+        </div>
+         <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>&nbsp;</p>
+    </div>
+
+        <div class="rich_media_inner">
+                        <div id="page-content">
+                <div id="img-content" class="rich_media_area_primary">
+                    <h2 class="rich_media_title" id="activity-name"  style="display:block;">
+
+                    </h2>
+                    <div class="rich_media_meta_list"  style="display:unset;">
+                        <em id="post-date" class="rich_media_meta rich_media_meta_text" style="display: inline;margin-right: 0.5rem">{php}echo date("Y-m-d",$myarticle['time']){/php}</em>
+
+                        <a class="rich_media_meta rich_media_meta_text rich_media_meta_nickname" style="display: unset">{$myarticle.username}</a>
+
+                        <div id="js_profile_qrcode" class="profile_container" style=" ;">
+
+                            <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                                <i class="profile_arrow arrow_out"></i>
+                                <i class="profile_arrow arrow_in"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="rich_media_content " id="js_content" style="padding: 20px">
+                        {$myarticle.comment}
+                    </div>
+                    <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style=" ;">
+                    </div>
+
+                    <div class="rich_media_tool" id="js_toobar3" style="display:block;">
+
+                        <span style=" ;" class="media_tool_meta meta_primary tips_global meta_praise" id="like3" onclick="dianzan();">
+                            <i class="icon_praise_gray" style="<?php if($iszan == 1){ echo'background-position:0 -18px';}?>" ></i><span class="praise_num" id="likeNum3"></span>
+                            <span class="tips_global" id="dianzannum" style="margin-left: 0; {if condition='$iszan eq 1'} background-position:0 -18px{/if}">{$myarticle.zan}</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+        <div style="height:2.6em;width:100%;background-color:#fff"></div>
+    <div class='community-comment' id="comList">
+        <ul>
+            {volist name='list' id='vo'}
+            {php}
+            $isdel = 0;
+            if(@$_SESSION['think']['user']['user_id']){
+            $userid = $_SESSION['think']['user']['user_id'];
+            if($vo['userid'] == $userid){
+            $isdel = 1;
+            }
+            $iszan = db('comment') -> where('userid',$userid)->where('mid',$vo['id']) -> where("comment is  null")->value('iszan');
+            }elseif(@$_COOKIE['mobile']){
+            $mobile = $_COOKIE['mobile'];
+            $userid = db('member') -> where('mobile',$mobile) -> value('id');
+            if($vo['userid'] == $userid){
+            $isdel = 1;
+            }
+            $iszan = db('comment') -> where('userid',$userid)->where('mid',$vo['id'])-> where("comment is  null")->value('iszan');
+            }else{
+            $iszan = 0;
+            }
+            {/php}
+
+            <li class="comment_border" style="border-bottom:0.08rem solid #ececec;">
+                <div class='comment-wrapper'>
+                    <img class='comment-user-profile' src="{php}if(!empty($vo['avatar'])) echo imgUrl($vo['avatar']);else echo '/static/home/images/logo.jpg'{/php}">
+                    <span class="comment-username" style="display: inline">{$vo.username}</span>
+                    {if condition='$isdel eq 1 '} <a class="del" style="float: right" value="{$vo.id}"> 删除</a> {/if}
+                    <a href="{:url('index/discovery/comment_list',array('id'=> $vo.id))}">
+                        <p class="comment-content comment">{$vo.comment}</p>
+                        <div class="comment-image-wrapper">
+                        </div></a>
+                    <div class="comment-date">
+                        <span>{$vo.timestr}</span>
+                        <i class="fa fa-commenting fa-lg message-icon" value="{$vo.id}" >{$vo.comment_count}</i>
+                        <i class="fa fa-heart fa-lg love-icon {if condition='$iszan eq 1 '} love_red {/if}" value="{$vo.id}">{$vo.zan}</i>
+                    </div>
+                </div>
+            </li>
+            {/volist}
+        </ul>
+    <input type="hidden" value="{$aid}" id="aid">
+    </div>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script>
+    $(".del").click(function () {
+        var id = ($(this).attr('value'));
+        layer.confirm('您确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function()
+        {
+            $.ajax({
+                    type: "post",
+                    url: "{:url('index/discovery/del_comment')}"+"&aid="+{$myarticle.id},
+                data: {
+            "id":id
+        },
+            success : function(data){
+                if(data.status == 0){
+                    layer.msg(data.msg,{ time: 2000});
+                }
+                setTimeout("layer.closeAll()",1500)
+                location.reload();
+            }
+        });
+        });
+
+    })
+    $(".message-icon").click(function () {
+
+        var id = ($(this).attr('value'));
+        $.ajax({
+            type: 'post',
+            url: "{:url('index/discovery/iscomment_login')}",
+            async:false,
+            dataType:'json',
+            success: function(data){
+                if(data.status==1){
+                    layer.open({
+                        type: 1,
+                        area: ['5.5rem', '4.2rem'],
+                        title: '评论',
+                        shadeClose: true, //点击遮罩关闭
+                        content: '\<\div style="padding:.1rem;" class="comment-window-wrapper"><textarea class="comment-alert" name="comment" id="comment">\<\/textarea>\<input class="comment-alert-submit" type="button" id="comment_sub" value="提交评论">\<\/div>',
+                        end: function () {
+                            location.reload();
+                        }
+                    });
+                    $('#comment_sub').on('click', function(){
+                        var aid = $('#aid').val();
+                        $.ajax({
+                            type: 'post',
+                            url: "{:url('index/discovery/comment')}&mid="+id+"&aid=" + aid + "&cid=0",
+                            async: false,
+                            dataType: 'json',
+                            data:{comment:$('#comment').val()},
+                            success:function (res) {
+                                if(res.status==2){
+                                    layer.msg(res.msg,{anim:0});
+                                    setTimeout("layer.closeAll()",1500)
+                                }else{
+                                    layer.msg(res.msg,{anim:6})
+                                    setTimeout("layer.closeAll()",1500)
+                                }
+                            }
+                        })
+
+                    });
+                }else{
+                    layer.msg(data.msg,{anim:6});
+                    return false;
+                }
+            }
+        })
+    })
+ function   dianzan(){
+        var url="{:url('index/discovery/comment_love')}";
+        var id = {:input('id')};
+        if(id<0){
+            return;
+        }
+        $.ajax({
+            type:'get',
+            url:url, 
+            data:{    
+                 aid:$("#aid").val(),
+                mid:id
+            }, 
+            success: function(ok){
+                if(ok.status==1){
+                    var dianzannum=$("#dianzannum").text();
+                    dianzannum=parseInt(dianzannum)+1;
+                    //alert(dianzannum);
+                    $("#dianzannum").text(dianzannum);
+                    $(".icon_praise_gray").attr("style","background-position:0 -18px");
+                    //alert('成功');
+                }else{
+                    alert('您已点过赞了');
+                }
+
+            }
+        });
+}
+
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
+function fxshow(){
+    $('#yjfx').show();
+}
+function fxhide(){
+    $('#yjfx').hide();
+}
+
+    $(".love-icon").click(function () {
+        var id = ($(this).attr('value'));
+        var num=parseInt($(this).text());
+        var a = $(this);
+        // ($(this).text(2))
+        $.ajax({
+            type: 'get',
+            url: "{:url('index/discovery/comment_love')}&mid="+ id +"&aid="+$('#aid').val(),
+            data:{
+
+            },
+            async:false,
+            dataType:'json',
+            success: function(data){
+                if(data.status==1){
+                    a.addClass("love_red");
+                    num +=1;
+                    a.text(num)
+                    layer.msg(data.msg,{anim:0});
+
+                }else{
+                    layer.msg(data.msg,{anim:6});
+                }
+            },
+            error: function(xhr){
+                layer.msg('网络错误，请稍后再试');
+            }
+        });
+    })
+        
+</script>
+
+
+
+
+      
+
+
+ 
+</body>
+
+</html>

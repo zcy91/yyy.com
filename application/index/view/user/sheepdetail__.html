@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>羊羊详情 - 食花百草羊</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="/static/home/css/base.css" rel="stylesheet" />
+    <link href="/static/home/css/currency.css" rel="stylesheet" />
+    <link href="/static/home/css/index.css" rel="stylesheet" />
+    <script src="/static/home/js/jquery1.10.2.js"></script>
+    <script src="/static/home/js/common.js"></script>
+    <script src="/static/home/js/fontSize.js"></script>
+    <script src="/static/home/layer/layer.js"></script>
+    <link href="/static/home/css/font-awesome.css" rel="stylesheet" />
+
+    <link href="css/swiper-3.3.1.min.css" rel="stylesheet" />
+    <script src="js/swiper-3.3.1.jquery.min.js"></script>
+    <script src="http://g.alicdn.com/de/prismplayer/1.4.2/prism-min.js" type="text/javascript"></script>
+    <link href="http://g.alicdn.com/de/prismplayer/1.4.2/skins/default/index-min.css" rel="stylesheet" />
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>羊羊详情</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-sheepdetail">
+
+        <!--视频展示-->
+        <div class="sheepdetail-video">
+            <div id="J_prismPlayer" class="prism-player"></div>
+            <script>
+                // 初始化播放器
+                var player = new prismplayer({
+                    id: "J_prismPlayer", // 容器id
+                    source: "",//视频地址
+                    cover: "images/sheep.jpg",//视频封面图
+                    width: "6rem",         // 播放器宽度
+                    height: "4rem",      // 播放器高度
+                    autoplay: true,
+                });
+
+                var clickDom = document.getElementById('J_clickToPlay');
+                clickDom.addEventListener('click', function (e) {
+                    // 调用播放器的play方法
+                    player.play();
+                });
+
+                // 监听播放器的pause事件
+                player.on('pause', function () {
+                    alert('播放器暂停啦！');
+                });
+            </script>
+        </div>
+        <!--视频展示结束-->
+        <!--羊信息-->
+        <div class="sheepdetail-info">
+            <p>{$mylamb.lambname}</p>
+            <span>{$mylamb.message}</span>
+            <a href="javascript:;" class="info-share"><i class="fa fa-share-alt"></i></a>
+        </div>
+        <!--羊信息结束-->
+        <!--养殖周期-->
+        <div class="sheepdetail-cycle">
+            <ul>
+                <li>生长：<span>{$czday}天</span></li>
+                <li>预计<span>{$mylamb.cycle}</span>天成熟</li>
+                <li>累计收益：<span>{$yjsy}</span>元</li>
+            </ul>
+        </div>
+        <!--养殖周期结束-->
+        <!--往期视频-->
+        <div class="sheepdetail-videotape">
+            <h1>往期视频</h1>
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <a href="javascript:;">
+                            <img src="/static/home/images/videotape.jpg" />
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="javascript:;">
+                            <img src="/static/home/images/videotape.jpg" />
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="javascript:;">
+                            <img src="/static/home/images/videotape.jpg" />
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="javascript:;">
+                            <img src="/static/home/images/videotape.jpg" />
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="javascript:;">
+                            <img src="/static/home/images/videotape.jpg" />
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="javascript:;">
+                            <img src="/static/home/images/videotape.jpg" />
+                        </a>
+                    </div>
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <!--往期视频结束-->
+
+    </div>
+    <!--内容主体结束-->
+    <!--详情公共底部-->
+    <div class="sheepdetail-footer">
+        <a href="{:url('/index/user/soldsheep',array('id'=>$mylamb.id))}">我要出售</a>
+    </div>
+    <!--详情公共底部结束-->
+
+
+    <script type="text/javascript">
+        $(function () {
+            $("#J_prismPlayer").find("video").attr("webkit-playsinline", "webkit-playsinline");
+        })
+
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 3,
+            slidesPerColumn: 1,
+            spaceBetween: 10,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+    </script>
+
+</body>
+</html>

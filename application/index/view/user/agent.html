@@ -1,0 +1,111 @@
+{include file="header"/}
+</head>
+<style>
+    .agent{
+        padding: 0 .1rem;
+        font-size: .22rem;
+        line-height: .3rem;
+        color: #999999;
+    }
+    .invite-share ul li{
+        width: 100%;
+    }
+</style>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>代理证书</p>
+        <div class="public-input-wrapper" style="padding-top: 0">
+            <!--<a class="public-submit" src="{$img}"  id="img"  href="{:url('index/user/downimg')}?img={$img}"  >下载</a>-->
+        </div>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-protocol">
+
+        <img src="{:url('/index/user/getagent',array('uid'=>$uid,'id'=>$id))}" />
+
+    </div>
+    <div class="agent" style="text-align: center">
+        代理说明如下：
+    </div>
+    <div class="agent">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A代理推荐B代理领养并且兑换成功，A代理会获得350元/只的奖励；B代理推荐C代理领养并且兑换成功 ，B代理会获得350元/只奖励，A代理会获得150元/只奖励，C代理推荐D代理领养并且兑换成功， C代理会获得350元/只奖励，B代理会获得150元/只奖励，A代理不再享有奖励。
+    </div>
+    <div class="invite-share">
+        <ul>
+            <li>
+                <a href="javascript:shareHref()" class="wechatBtn" style="margin-top: .15rem;text-align: center">
+                    <i class="fa fa-wechat"><span>分享到微信</span></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div id="yjfx" onclick="fxhide()" style="display:none;height:100%;width:100%;position: fixed; left: 0px;top: 0px;z-index: 100;background-image:url(/static/home/images/fx.png);background-size:cover"></div>
+    {include file="wx_share"/}
+    <script>
+        $('#img').click(function () {
+            {
+               var img = $("#img").attr('src');
+                layer.msg('下载成功');
+//                $.ajax({
+//                    type: 'POST',
+//                    url: '{:url("/index/user/downimg")}',
+//                    data:{
+//                        img:img,
+//                    },
+//                    success: function(data){
+//                        if(data.type==1){
+//                            layer.msg(data.img);
+//
+//                        }else{
+//                            layer.msg(data.img);
+//                        }
+//                    },
+//                    error: function(xhr){
+//                        layer.msg('error');
+//                    }
+//                });
+            }
+        })
+
+        $(document).ready(function () {
+            $("#img").attr("src", "{$img}");
+        })
+        function fxhide(){
+            $('#yjfx').hide();
+        }
+        function shareHref() {
+            var url = window.location.href;
+            var params = JSON.stringify({type: "session", title: "邀请好友", description: "快来一起来食花百草领羊吧", url: url});
+            try {
+                switch (navigator.userAgent) {
+                    case "oioos_webkit_ios":
+                        //app ios
+                        window.location.href = "ios://share_to_wx?" + params;
+                        break;
+                        return false;
+
+                    case "Yang_Webview":
+                    //兼容第一个版本的羊
+                    case "oioos_webkit_android":
+                        //app android
+                        yangJs.shareUrlToWx(params);
+                        break;
+
+                    default:
+                        $('#yjfx').show();
+                        //其他浏览器：webkit safari wexin(公众号)
+                        console.log("pay data is", object2data(pay_data));
+                }
+            } catch (e) {
+                console.log('pay error', e);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>首页 - 食花百草羊</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="/static/home/css/base.css" rel="stylesheet" />
+    <link href="/static/home/css/currency.css" rel="stylesheet" />
+    <link href="/static/home/css/index.css" rel="stylesheet" />
+    <script src="/static/home/js/jquery1.10.2.js"></script>
+    <script src="/static/home/js/common.js"></script>
+    <script src="/static/home/js/fontSize.js"></script>
+    <script src="/static/home/layer/layer.js"></script>
+    <link href="/static/home/css/font-awesome.css" rel="stylesheet" />
+    <script type="text/javascript">
+    $(function () {
+        $(".notice-line").slideUp();
+
+        $(".shijing").on("click", function () {
+            $(".index-bg").prop("src", "/static/home/images/index-bg2.jpg");
+            $(".index-buy2").show();
+            $(".index-buy").hide();
+        })
+        $(".katong").on("click", function () {
+            $(".index-bg").prop("src", "/static/home/images/index-bg.jpg");
+            $(".index-buy2").hide();
+            $(".index-buy").show();
+        })
+    })
+    </script>
+
+</head>
+<body style="position:relative;">
+
+    <!--内容主体-->
+    <div class="m-index">
+        <!--背景图-->
+        <img src="/static/home/images/index-bg.jpg" class="index-bg" />
+        <!--背景图-->
+        <!--公告-->
+        <div class="index-notice">
+            <ul class="notice-line">
+                {if !empty($fabu)}
+                    <li><a href="javascript:;">食花百草羊{$fabu.gname}已开售，仅剩{$fabu.stock}只，速来抢购！</a></li>
+                {/if}
+                {volist name="isorder" id="vo"}
+                <li><a href="javascript:;">恭喜{if !empty($vo.username)}{$vo.username}{else !empty($vo.realname)/}{$vo.realname}{/if}认领羊羔成功，成为食花百草羊尊贵牧场主！</a></li>
+                {/volist}
+            </ul>
+        </div>
+        <!--公告结束-->
+        <!--切换按钮-->
+        <div class="index-switch">
+            <ul>
+                <li class="shijing">
+                    <img src="/static/home/images/index-bg2.jpg" />
+                </li>
+                <li class="katong">
+                    <img src="/static/home/images/index-bg.jpg" />
+                </li>
+            </ul>
+        </div>
+        <!--切换按钮结束-->
+        <!--养殖数-->
+        <div class="index-sum">
+            <p>养殖总数</p>
+            <span onclick="window.location='{:url('/index/user/sheepfold')}'"><u>{if isset($lambnum)}{$lambnum}{else/}15{/if}</u>只</span>
+        </div>
+        <!--养殖数结束-->
+        <!--账户余额-->
+        <div class="index-money">
+            <p>账户余额</p>
+            <span onclick="window.location='{:url('/index/user/wallet')}'"><u>{if !empty($member)}{$member.credit}{else/}999999999.00{/if}</u>元</span>
+        </div>
+        <!--账户余额结束-->
+        <!--抢购-->
+        <a href="/index/shop/glist.html" class="index-buy">
+            <img src="/static/home/images/index-btn.png" />
+        </a>
+        <a href="/index/shop/glist.html" class="index-buy2">
+            <img src="/static/home/images/index-btn2.png" />
+        </a>
+        <!--抢购结束-->
+    </div>
+    <!--内容主体结束-->
+    <!--公共底部-->
+    <div class="m-footer">
+        {include file="footer"/}
+    </div>
+    <!--公共底部结束-->
+</body>
+</html>

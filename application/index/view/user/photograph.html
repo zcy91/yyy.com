@@ -1,0 +1,646 @@
+{include file="header"/}
+<link rel="stylesheet" href="/static/dist/photoswipe.css">
+<link rel="stylesheet" href="/static/dist/default-skin/default-skin.css">
+<script src="/static/dist/photoswipe.js"></script>
+<script src="/static/dist/photoswipe-ui-default.min.js"></script>
+<link rel="stylesheet" href="/static/css/index.css">
+<style>
+
+</style>
+<!--<style>-->
+    <!--.comment{-->
+        <!--font-size: 0.2rem;-->
+        <!--line-height: .3rem;-->
+        <!--overflow:hidden;-->
+        <!--text-overflow:ellipsis;-->
+        <!--display:-webkit-box;-->
+        <!-- -webkit-box-orient:vertical;-->
+        <!-- -webkit-line-clamp:2;-->
+        <!--margin-top: .1rem;-->
+        <!--margin-bottom: .1rem;-->
+    <!--}-->
+    <!--.product-imgs-li {-->
+        <!--display: block;-->
+        <!--float: left;-->
+        <!--overflow: hidden;-->
+        <!--width: 2.90133rem;-->
+        <!--height: 2.90133rem;-->
+        <!--border-radius: .08533rem;-->
+    <!--}-->
+    <!--.comment_border{-->
+     <!--border-bottom: .08rem solid #ecec;-->
+<!--}-->
+    <!--.item-pic-list ul {-->
+        <!--overflow: hidden;-->
+    <!--}-->
+    <!--.item-pic-list ul li {-->
+        <!--float: left;-->
+        <!--width: 2.4rem;-->
+        <!--box-sizing: border-box;-->
+        <!--padding: .02rem;-->
+        <!--text-align: center;-->
+        <!--margin-top: .08rem;-->
+    <!--}-->
+    <!--.item-pic-list ul li img {-->
+        <!--width: 2rem;-->
+        <!--height: 2rem;-->
+    <!--}-->
+    <!--.community-comment li{-->
+        <!--padding-bottom: 0.1rem;-->
+    <!--}-->
+    <!--.goods-pic {-->
+        <!--width: 2rem;-->
+        <!--height: 2rem;-->
+        <!--background-color: #ddd;-->
+        <!--background-size: cover;-->
+        <!--background-position: center;-->
+    <!--}-->
+    <!--#mobile{-->
+        <!--float: left;-->
+        <!--font-size: .26rem;-->
+        <!--padding: .1rem 0 .1rem 0;-->
+    <!--}-->
+
+    <!--#submit{-->
+        <!--margin-left: .1rem;-->
+        <!--background-color: #f66c48;-->
+        <!--color: #fff;-->
+        <!--font-size: .25rem;-->
+        <!--padding: .06rem .3rem;-->
+        <!--line-height: .4rem;-->
+        <!--height: .4rem;-->
+        <!--border-radius: .1rem;-->
+        <!--width: .6rem;-->
+    <!--}-->
+    <!--#search{-->
+        <!--padding: .1rem 0;-->
+    <!--}-->
+    <!--.addaddress-user{-->
+        <!--margin-top: .2rem;-->
+    <!--}-->
+    <!--figure{-->
+        <!--display: inline-block;-->
+
+    <!--}-->
+    <!--.my-gallery{-->
+        <!--position:relative;-->
+        <!--right: 0.4rem;-->
+    <!--}-->
+<!--</style>-->
+</head>
+<div style="position:relative;" id="opacResultTable">
+
+    <!-- 公共头部 -->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>摄影大赛</p>
+        <!--<a href="{:url('/index/user/dan_photorelease')}" class="i"><i class='community-add-icon'></i></a>-->
+        <!--<a href="{:url('/index/user/zu_photorelease')}" class="j"><i class='community-add-icon'></i></a>-->
+    </div>
+    <!-- 公共头部结束 -->
+    <!-- 评论区 -->
+    <div class="sphome-class">
+        <ul>
+            <li {if (!empty($order_bay) && $order_bay==1) or empty($order_bay)} class="ahover" {/if}onclick="javascript:location.href='{:url('/index/user/photograph',array('order'=>1))}'">默认</li>
+            <li {if !empty($order_bay) && $order_bay==2} class="ahover"  {/if}onclick="javascript:location.href='{:url('/index/user/photograph',array('order'=>2))}'">投票↓</li>
+            <li {if !empty($order_bay) && $order_bay==3} class="ahover"  {/if} onclick="javascript:location.href='{:url('/index/user/photograph',array('order'=>3))}'">投票↑</li>
+        </ul>
+    </div>
+    {php}
+        if(empty($order_bay)){
+            $order_bay = 1;
+    }
+    {/php}
+    <input type="hidden"  value = "{$order_bay}" id="order_bay">
+    <div class="search-phone-wrapper">
+        <div class="search-content">
+            <input type="number" class='search-input' placeholder='请输入手机号' id="mobile">
+            <input type="button" class='search-btn' value='搜索' onclick="search()">
+        </div>
+    </div>
+
+    <div class='community-comment' id="comList">
+        <ul class="public-wrapper">
+            {volist name='list' id='vo'}
+            {php}
+           if(@$_SESSION['think']['user']['user_id']){
+                $userid = $_SESSION['think']['user']['user_id'];
+                $iszan = db('comment') -> where('userid',$userid)->where('aid',$vo['id'])->where("comment is null")-> where("mid",0)->value('iszan');
+            }elseif(@$_COOKIE['mobile']){
+                $mobile = $_COOKIE['mobile'];
+                $userid = db('member') -> where('mobile',$mobile) -> value('id');
+                $iszan = db('comment') -> where('userid',$userid)->where('aid',$vo['id'])->where("comment is null" )-> where("mid",0)->value('iszan');
+            }else{
+               $iszan = 0;
+            }
+            {/php}
+
+            <!--<li class="comment_border" style="border-bottom:0.08rem solid #ececec;">-->
+            <li>
+                <!--<div class='comment-wrapper'>-->
+                    <!--<div style="width:2rem;position:absolute;right:-.5rem;top:.1rem;background-color:#fff;height: 1rem;">-->
+                        <!--<p onclick="toupiao({$vo.id})" id="submit" >投票</p>-->
+                    <!--</div>-->
+                <img class='user-portrait' src="{php}if(!empty($vo['avatar'])) echo imgUrl($vo['avatar']);else echo '/static/home/images/logo.jpg'{/php}">
+                <div class='right-msg-wrapper'>
+                    <p class='user-name'>{$vo.username}</p>
+                    <a href="{:url('index/user/content',array('id'=> $vo.id))}" class="user-msg-detail">
+                       {$vo.content}
+
+                    </a>
+                    <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery" data-pswp-uid="{$key}">
+                            <!--<a class="J_ping" report-eventid="MProductdetail_CommentPictureTab" report-pageparam="1725965683" >-->
+                                    <!--<div class="my-gallery" data-pswp-uid="{$key}">-->
+                                    {foreach name="$vo['img']" key="key" item="v2"}
+                        <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                                    <a href="{$v2}" data-size = {$vo['size'][$key][0]}x{$vo['size'][$key][1]}>
+                                                        <div class="image-container" style="background-image: url({$v2})" ></div>
+                                                        <img src="{$v2}" style="display: none">
+                                                    </a>
+                                                </figure>
+                                    {/foreach}
+                    </div>
+                <div class="bottom-info">
+
+                    <span class='hours'>{$vo.timestr}</span>
+                    <div class='love-wrapper'>
+                        <i class="fa fa-heart fa-lg love-icon {if condition='$iszan eq 1 '} love_red {/if}" value="{$vo.id}" aria-hidden="true" onclick="zan(this)"></i>
+                        <span class="zan">{$vo.zan}</span>
+                    </div>
+                    <div class='msg-count'>
+                        <i class="fa fa-commenting fa-lg message-icon" aria-hidden="true" value="{$vo.id}"></i><span>{$vo.comment}</span>
+                    </div>
+                    <div class='vote-wrapper'>
+                        <input type="button" value='投票' onclick="toupiao({$vo.id} ,this)" >
+                        <span class="span">{$vo.vote}</span>票
+                    </div>
+                        <!--<span style="float: right">投票数：<strong style="color: #0aba07">{$vo.vote}</strong></span>-->
+                        <!--<i class="fa fa-commenting fa-lg message-icon" value="{$vo.id}" >{$vo.comment}</i>-->
+                        <!--<i class="fa fa-heart fa-lg love-icon {if condition='$iszan eq 1 '} love_red {/if}" value="{$vo.id}">{$vo.zan}</i>-->
+                </div>
+                </div>
+            </li>
+            {/volist}
+        </ul>
+        {if condition="($count gt $current_count) AND (count($commentlist) eq $page_count)"}
+        <div class="getmore" style="font-size:.32rem;text-align:center;color:#888;padding:.25rem .24rem .4rem; clear:both">
+            <a href="javascript:void(0)" onClick="ajaxSourchSubmit();" id="jiazai">点击加载更多</a>
+        </div>
+        {elseif condition="($count elt $current_count AND $count gt 0)" /}
+        <div class="score enkecor" style="font-size:.32rem;text-align:center;color:#888;padding:.25rem .24rem .4rem; clear:both">已显示完所有内容</div>
+        {else /}
+        {/if}
+    </div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+        <div class="pswp__bg"></div>
+
+        <!-- Slides wrapper with overflow:hidden. -->
+        <div class="pswp__scroll-wrap">
+
+            <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+
+            <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+            <div class="pswp__ui pswp__ui--hidden">
+
+                <div class="pswp__top-bar">
+
+                    <!--  Controls are self-explanatory. Order can be changed. -->
+
+                    <div class="pswp__counter"></div>
+
+                    <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                    <!--<button class="pswp__button pswp__button&#45;&#45;share" title="Share"></button>-->
+
+                    <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                    <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                    <!-- element will get class pswp__preloader--active when preloader is running -->
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                            <div class="pswp__preloader__cut">
+                                <div class="pswp__preloader__donut"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div>
+
+                <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+                </button>
+
+                <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+                </button>
+
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- 评论区结束 -->
+
+    <!--公共底部-->
+    <div class="m-footer">
+        {include file="footer"/}
+    </div>
+    <!--公共底部结束-->
+    <script src="/static/home/js/klass.min.js"></script>
+    <script>
+        function toupiao(id , that) {
+
+
+            var num=parseInt($(that).parent().find('.span').text());
+
+            $.ajax({
+                type: "post",
+                url: "{:url('index/user/toupiao')}",
+                async:false,
+                data: {
+                    "id":id
+                },
+                success : function(data){
+                    if(data.status == 1){
+                        num = num+1;
+                        $(that).parent().find('.span').text(num)
+                        layer.msg(data.msg,{ time: 2000});
+                    }else{
+                        layer.msg(data.msg,{ time: 2000});
+                    }
+//             setTimeout("layer.closeAll()",1500)
+//             window.location.href="{:url('index/user/photograph')}";
+                }
+            });
+        }
+        function search() {
+            var mobile = $("#mobile").val()
+            window.location.href="{:url('index/user/photograph')}"+"?mobile="+mobile
+        }
+    </script>
+    <script>
+
+        var initPhotoSwipeFromDOM = function(gallerySelector) {
+
+            // 解析来自DOM元素幻灯片数据（URL，标题，大小...）
+            // (children of gallerySelector)
+            var parseThumbnailElements = function(el) {
+                var thumbElements = el.childNodes,
+                    numNodes = thumbElements.length,
+                    items = [],
+                    figureEl,
+                    linkEl,
+                    size,
+                    item;
+
+                for(var i = 0; i < numNodes; i++) {
+
+                    figureEl = thumbElements[i]; // <figure> element
+
+                    // 仅包括元素节点
+                    if(figureEl.nodeType !== 1) {
+                        continue;
+                    }
+                    linkEl = figureEl.children[0]; // <a> element
+
+                    size = linkEl.getAttribute('data-size').split('x');
+
+                    // 创建幻灯片对象
+                    item = {
+                        src: linkEl.getAttribute('href'),
+                        w: parseInt(size[0], 10),
+                        h: parseInt(size[1], 10)
+                    };
+
+
+
+                    if(figureEl.children.length > 1) {
+                        // <figcaption> content
+                        item.title = figureEl.children[1].innerHTML;
+                    }
+
+                    if(linkEl.children.length > 0) {
+                        // <img> 缩略图节点, 检索缩略图网址
+                        item.msrc = linkEl.children[0].getAttribute('src');
+                    }
+
+                    item.el = figureEl; // 保存链接元素 for getThumbBoundsFn
+                    items.push(item);
+                }
+
+                return items;
+            };
+
+            // 查找最近的父节点
+            var closest = function closest(el, fn) {
+                return el && ( fn(el) ? el : closest(el.parentNode, fn) );
+            };
+
+            // 当用户点击缩略图触发
+            var onThumbnailsClick = function(e) {
+                e = e || window.event;
+                e.preventDefault ? e.preventDefault() : e.returnValue = false;
+
+                var eTarget = e.target || e.srcElement;
+
+                // find root element of slide
+                var clickedListItem = closest(eTarget, function(el) {
+                    return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
+                });
+
+                if(!clickedListItem) {
+                    return;
+                }
+
+                // find index of clicked item by looping through all child nodes
+                // alternatively, you may define index via data- attribute
+                var clickedGallery = clickedListItem.parentNode,
+                    childNodes = clickedListItem.parentNode.childNodes,
+                    numChildNodes = childNodes.length,
+                    nodeIndex = 0,
+                    index;
+
+                for (var i = 0; i < numChildNodes; i++) {
+                    if(childNodes[i].nodeType !== 1) {
+                        continue;
+                    }
+
+                    if(childNodes[i] === clickedListItem) {
+                        index = nodeIndex;
+                        break;
+                    }
+                    nodeIndex++;
+                }
+
+
+
+                if(index >= 0) {
+                    // open PhotoSwipe if valid index found
+                    openPhotoSwipe( index, clickedGallery );
+                }
+                return false;
+            };
+
+            // parse picture index and gallery index from URL (#&pid=1&gid=2)
+            var photoswipeParseHash = function() {
+                var hash = window.location.hash.substring(1),
+                    params = {};
+
+                if(hash.length < 5) {
+                    return params;
+                }
+
+                var vars = hash.split('&');
+                for (var i = 0; i < vars.length; i++) {
+                    if(!vars[i]) {
+                        continue;
+                    }
+                    var pair = vars[i].split('=');
+                    if(pair.length < 2) {
+                        continue;
+                    }
+                    params[pair[0]] = pair[1];
+                }
+
+                if(params.gid) {
+                    params.gid = parseInt(params.gid, 10);
+                }
+
+                return params;
+            };
+
+            var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
+                var pswpElement = document.querySelectorAll('.pswp')[0],
+                    gallery,
+                    options,
+                    items;
+
+                items = parseThumbnailElements(galleryElement);
+
+                // 这里可以定义参数
+                options = {
+                    barsSize: {
+                        top: 100,
+                        bottom: 100
+                    },
+                    fullscreenEl : false, // 是否支持全屏按钮
+                    shareButtons: [
+                        {id:'wechat', label:'分享微信', url:'#'},
+                        {id:'weibo', label:'新浪微博', url:'#'},
+                        {id:'download', label:'保存图片', url:'{{raw_image_url}}', download:true}
+                    ], // 分享按钮
+
+                    // define gallery index (for URL)
+                    galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+
+                    getThumbBoundsFn: function(index) {
+                        // See Options -> getThumbBoundsFn section of documentation for more info
+                        var thumbnail = items[index].el.getElementsByTagName('img')[0], // find thumbnail
+                            pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+                            rect = thumbnail.getBoundingClientRect();
+
+                        return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
+                    }
+
+                };
+
+                // PhotoSwipe opened from URL
+                if(fromURL) {
+                    if(options.galleryPIDs) {
+                        // parse real index when custom PIDs are used
+                        for(var j = 0; j < items.length; j++) {
+                            if(items[j].pid == index) {
+                                options.index = j;
+                                break;
+                            }
+                        }
+                    } else {
+                        // in URL indexes start from 1
+                        options.index = parseInt(index, 10) - 1;
+                    }
+                } else {
+                    options.index = parseInt(index, 10);
+                }
+
+                // exit if index not found
+                if( isNaN(options.index) ) {
+                    return;
+                }
+
+                if(disableAnimation) {
+                    options.showAnimationDuration = 0;
+                }
+
+                // Pass data to PhotoSwipe and initialize it
+                gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+                gallery.init();
+            };
+
+            // loop through all gallery elements and bind events
+            var galleryElements = document.querySelectorAll( gallerySelector );
+
+            for(var i = 0, l = galleryElements.length; i < l; i++) {
+                galleryElements[i].setAttribute('data-pswp-uid', i+1);
+                galleryElements[i].onclick = onThumbnailsClick;
+            }
+
+            // Parse URL and open gallery if it contains #&pid=3&gid=1
+            var hashData = photoswipeParseHash();
+            if(hashData.pid && hashData.gid) {
+                openPhotoSwipe( hashData.pid ,  galleryElements[ hashData.gid - 1 ], true, true );
+            }
+        };
+
+        // execute above function
+        initPhotoSwipeFromDOM('.my-gallery');
+
+        if({$p}){
+            var page = {$p};
+        }else{
+            var page = 1 ;
+        }
+        function ityzl_SHOW_LOAD_LAYER(){
+            return layer.msg('努力中...', {icon: 16,shade: [0.5, '#f5f5f5'],scrollbar: false,offset: '0px', time:100000}) ;
+        }
+        function ityzl_CLOSE_LOAD_LAYER(index){
+            layer.close(index);
+        }
+
+        function ajaxSourchSubmit() {
+            page += 1;
+            var order_bay = {$order_bay};
+            if(!order_bay){
+                 order_bay = 1;
+            }
+            $.ajax({
+                type: "GET",
+                url: "{:url('index/user/ajaxphotograph')}"+"?p=" + page+"&order_bay="+order_bay,
+                beforeSend: function () {
+                    i = ityzl_SHOW_LOAD_LAYER();
+                },
+                success: function (data) {
+                    ityzl_CLOSE_LOAD_LAYER(i);
+                    $('.getmore').hide();
+                    if ($.trim(data) != ''){
+                        $("#comList").append(data);
+                    }
+                },
+                error: function (e, jqxhr, settings, exception) {
+                    ityzl_CLOSE_LOAD_LAYER(i);
+                }
+
+            });
+        }
+        function  ajax_sourch_submit_hide(){
+            $('.getmore').hide();
+        }
+        $(".message-icon").click(function () {
+            var id = ($(this).attr('value'));
+            $.ajax({
+                type: 'post',
+                url: "{:url('index/discovery/iscomment_login')}?mid=-1&aid="+id,
+                async:false,
+                dataType:'json',
+                success: function(data){
+                    if(data.status==1){
+                        layer.open({
+                            type: 1,
+                            area: ['5.5rem', '4.2rem'],
+                            title: '评论',
+                            shadeClose: true, //点击遮罩关闭
+                            shade:[0.5,'#fff'],  //遮罩,如果想定义别的颜色,可以shade:[0.5,'#fff']
+                            skin:'demoClass',    //样式类名
+                            content: '\<\div style="padding:.1rem;" class="comment-window-wrapper"><textarea class="comment-alert" name="comment" id="comment">\<\/textarea>\<input class="comment-alert-submit" type="button" id="comment_sub1" value="提交评论">\<\/div>',
+                            end:function () {
+
+                            }
+                        });
+                        //layer.msg(data.msg,{anim:0});
+                   // <form action="{:url(\'index/discovery/comment\')}&mid=0&aid='+id+'" enctype="multipart/form-data" method="post">
+                        var index = parent.layer.getFrameIndex(window.name);
+                        $('#comment_sub1').on('click', function(){
+                            $.ajax({
+                                type: 'post',
+                                url: "{:url('index/discovery/comment')}?mid=0&aid=" + id + "&cid=1",
+                                async: false,
+                                dataType: 'json',
+                                data:{comment:$('#comment').val()},
+                                success:function (res) {
+                                   // layer.msg(res.msg,{anim:6});
+                                    if(res.status==2){
+                                        layer.msg(res.msg,{anim:6});
+                                        setTimeout("layer.closeAll()",1500)
+                                    }else{
+                                        layer.msg(res.msg,{anim:6})
+                                        setTimeout("layer.closeAll()",1500)
+                                    }
+                                    return false;
+                                }
+                            })
+
+                        });
+                    }else{
+                        layer.msg(data.msg,{anim:6});
+                        return false;
+                    }
+                }
+            })
+        })
+        function zan(that) {
+
+            var id = ($(that).attr('value'));
+            var zannum=parseInt($(that).parent().find('.zan').text());
+
+           var a = $(that);
+           // ($(this).text(2))
+            $.ajax({
+                type: 'get',
+                url: "{:url('index/discovery/comment')}&mid=0&aid="+id,
+                data:{
+
+                },
+                async:false,
+                dataType:'json',
+                success: function(data){
+                    if(data.status==1){
+                         a.addClass("love_red");
+                         zannum = (zannum) +1 ;
+
+                        ($(that).parent().find('.zan').text(zannum));
+                        layer.msg(data.msg,{anim:0});
+
+                    }else{
+                        layer.msg(data.msg,{anim:6});
+                    }
+                },
+                error: function(xhr){
+                    layer.msg('网络错误，请稍后再试');
+                }
+            });
+        }
+
+    </script>
+
+</body>
+</html>

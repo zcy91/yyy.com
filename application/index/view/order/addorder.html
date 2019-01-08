@@ -1,0 +1,94 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>填写申请</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-applic">
+        <!--羊羔照片-->
+        <div class="applic-photo">
+            <img src="{php}if(!empty($mygoods['img'])) echo imgUrl($mygoods['img']);else echo imgUrl(''){/php}" />
+        </div>
+        <!--羊羔照片结束-->
+        <!--羊羔名字-->
+        <div class="applic-name">
+           {for start="0" end="$num"}
+                <input name="lambname" type="text" placeholder="请为羊羔取名" />
+            {/for}
+        </div>
+        <!--羊羔名字结束-->
+        <!--羊羔寄语-->
+        <div class="applic-message">
+             <textarea name="message" id="message" placeholder="请填写寄语"></textarea>
+        </div>
+        <!--羊羔寄语结束-->
+        <!--申请按钮-->
+        <div class="applic-btn">
+            <input type="hidden" name='gid' value='{$mygoods.id}'/>
+            <input type="hidden" name='num' value='{$num}'/>
+            <input type="hidden" name='coupon' value='{$coupon}'/>
+            <input type="hidden" name='autograph' value='{$autograph}'/>
+            <input style="display: block;
+    width: 3rem;
+    margin: 0 auto;
+    padding: .2rem 0;
+    text-align: center;
+    font-size: .3rem;
+    color: #fff;
+    border-radius: .1rem;
+    background: #83ae3f;" type="button" onclick="addOrderLamb()" value="点击申请" />
+        </div>
+        <!--申请按钮结束-->
+    </div>
+    <!--内容主体结束-->
+    <script>
+        function addOrderLamb() {
+                lambname =new Array();
+                $('input[name^="lambname"]').each(function(i, el) {
+                    lambname[i] = $(this).val();
+                  });
+                var message = $('#message').val();
+                var gid = $('input[name="gid"]').val();
+                var num = $('input[name="num"]').val();
+                var coupon = $('input[name="coupon"]').val();
+                var autograph = $('input[name="autograph"]').val();
+               // alert(coupon);return false;
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/order/addorderlamb")}',
+                    data:{
+                        message:message,
+                        lambname:lambname,
+                        gid:gid,
+                        num:num,
+                        coupon:coupon,
+                        autograph:autograph,
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg,{anim:0},function(){
+                            //关闭后的操作
+                            window.location.href='/index/order/pay?oid='+data.oid;
+                            });
+                            
+                        }else{
+                            layer.msg(data.msg,{anim:6});
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error',{anim:6});
+                    }
+                });
+                resetCode(); //倒计时
+            }
+    </script>
+</body>
+</html>

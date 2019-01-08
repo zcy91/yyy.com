@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>收货地址 - 食花百草羊</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="/static/home/css/base.css" rel="stylesheet" />
+    <link href="/static/home/css/currency.css" rel="stylesheet" />
+    <link href="/static/home/css/index.css" rel="stylesheet" />
+    <script src="/static/home/js/jquery1.10.2.js"></script>
+    <script src="/static/home/js/common.js"></script>
+    <script src="/static/home/js/fontSize.js"></script>
+    <script src="/static/home/layer/layer.js"></script>
+    <link href="/static/home/css/font-awesome.css" rel="stylesheet" />
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>收货地址</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-address" style="background: #fff;">
+        <ul style="margin-bottom: 1rem">
+           {volist name='list' id='vo'}
+           <li id='li_{$vo.id}'>
+               <input style="display:inline;float: left;margin: 0.35rem 0.25rem 0.35rem 0.05rem;" type="radio" name="defaults" {if $vo.defaults==1}checked="checked"{/if} onclick="setDefaults({$vo.id})" >
+               <div style=" width: 80%;display:inline-block"  onclick="javascript:window.location.href='{:url('/index/user/addaddress',array('id'=>$vo.id))}'">
+                     <div class="address-detail">
+                        {$vo.province}{$vo.city}{$vo.area}{$vo.detailed}
+                     </div>
+                     <div class="address-name">
+                        <p>{$vo.name}</p>
+                        <span>{$vo.phone}</span>
+                     </div>
+               </div>
+                <span style="display:inline;float: right;margin: 0.35rem 0.05rem 0.35rem 0.25rem;font-size: .25rem;color: #828282;" onclick='del_address({$vo.id})'>
+                    <i class="fa fa-window-close"></i>
+                </span>
+                
+                
+           </li>
+           {/volist}
+       </ul>
+    </div>
+    <!--内容主体结束-->
+    <!--地址底部-->
+        <a href="addaddress.html" class="address-footer"><i class="fa fa-plus-circle"></i>添加新地址</a>
+    <!--地址底部结束-->
+    <script>
+        function setDefaults(id){
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/setdefaults")}',
+                    data:{
+                        id:id
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg);
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+        }
+        function del_address(id){
+            var msg = "您真的确定要删除吗？\n\n请确认！";
+                if (confirm(msg)==true){
+                }else{
+                return false;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/deladdress")}',
+                    data:{
+                        id:id
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            $('#li_'+id).remove();
+                            layer.msg(data.msg);
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

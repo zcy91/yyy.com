@@ -1,0 +1,158 @@
+{include file="header"/}
+    <link href="/static/home/css/swiper-3.3.1.min.css" rel="stylesheet" />
+    <script src="/static/home/js/swiper-3.3.1.jquery.min.js"></script>
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>商品详情</p>
+        <a href="{:url('/index/mall/shopcart')}" class="head-info">
+            <i class="fa fa-shopping-cart "></i>
+        </a>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-spdetail">
+        <!--轮播广告-->
+        <div class="spdetail-advimg">
+            <!-- Swiper -->
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img style='width: 100%;height: 4rem;' src="{php}if(!empty($details['img'])) echo imgUrl($details['img']);else echo imgUrl(''){/php}" />
+                    </div>
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <!--轮播广告结束-->
+        <form class="layui-form col-lg-5" id="yourformid">
+        <!--产品名字-->
+        <div class="spdetail-name">
+            <p>{$details.gname}</p>
+            <span>羊肉很好吃，又健康，肥而不腻，保健养生。</span>
+        </div>
+        <!--产品名字结束-->
+        <!--产品信息-->
+        <div class="spdetail-info">
+            <p>积分：<u id='price'>{$details.price2}</u></p>
+            <div class="info-numb">
+                <span>包邮</span>
+                <i>积分：{$details.price2}</i>
+                <b>{$details.sold}人已兑换</b>
+            </div>
+        </div>
+        <!--产品信息结束-->
+        <!--产品购买-->
+        <div class="spdetail-buy">
+            <div class="buy-numb">
+                <span>购买数量</span>
+                <div class="numb-btn">
+                    <input type="button"  onclick="setnum(2)"  value="+" class="add" />
+                    <input type="text" id='numb' name='num[{$details.id}]' placeholder="0" value="1" class="text" />
+                    <input type="button"  onclick="setnum(1)" value="-" class="min" />
+                </div>
+            </div>
+            <div class="buy-info">
+                总计积分：<span id="prices">{$details.price2}</span>
+            </div>
+        </div>
+        <!--产品购买结束-->
+        <!--产品详情-->
+        <div class="spdetail-detail">
+            {$details.content}
+        </div>
+        <!--产品详情结束-->
+        </form> 
+    </div>
+    <!--内容主体结束-->
+    <!--购买底部-->
+    <div class="shop-footer">
+        <a href="javascript:shopCart();">
+            <i class="fa fa-shopping-cart"></i>加入购物车
+        </a>
+        <a href="javascript:addmallorder();">
+            <i class="fa fa-dollar"></i>立即购买
+        </a>
+    </div>
+    <!--购买底部结束-->
+    <script>
+        function setnum(id){
+            var price=$('#price').html();
+            var num =$('#numb').val();
+            if(id==1){
+                var nums=parseInt(num)-1;
+                if(nums<=0){nums=1};
+                var prices=nums*price;
+                $('#numb').val(nums);
+                $('#prices').html(prices.toFixed(2));
+            }else{
+                var nums=parseInt(num)+1;
+                if(nums<=0){nums=1};
+                var prices=nums*price;
+                $('#numb').val(nums);
+                $('#prices').html(prices.toFixed(2));
+            }
+        }
+    </script>
+    <script>
+         //提交订单
+        function addmallorder(){
+            {if !empty($memberid)}
+            $.ajax({
+                type: 'POST',
+                url: '/index/order/addmallorder',
+                data:$('#yourformid').serialize(),
+                success: function(data){
+                     if(data.type==1){
+                        layer.msg(data.msg,{anim:0},function(){
+                            //关闭后的操作
+                            window.location.href='/index/order/mallpay/oid/'+data.oid;
+                            });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+
+                },
+                error: function(xhr){
+                    layer.msg('error');
+                }
+            });
+            {else/}
+                layer.msg('尚未登录，请先登录',{anim:0},function(){
+                    //关闭后的操作
+                    window.location.href='/index/login/login';
+                });
+            {/if}
+        }
+        function shopCart(){
+             var gid = {$details.id};
+             var num = $('#numb').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/mall/setshopcart")}',
+                    data:{
+                        gid:gid,
+                        num:num,
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg);
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

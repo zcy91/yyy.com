@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>个人信息</title>
+	<meta name="renderer" content="webkit">	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">	
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="format-detection" content="telephone=no">	
+	<link rel="stylesheet" type="text/css" href="/static/common/layui/css/layui.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/common/bootstrap/css/bootstrap.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/common/global.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/css/personal.css" media="all">
+</head>
+<body>
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<header class="larry-personal-tit">
+			<span>个人信息</span>
+		</header><!-- /header -->
+		<div class="larry-personal-body clearfix">
+			<form class="layui-form col-lg-5" action=""   onsubmit="return false;" method="post">
+				<div class="layui-form-item">
+					<label class="layui-form-label">昵称</label>
+					<div class="layui-input-block">
+						{if !empty($myuser.username)}{$myuser.username}{/if}
+						<input type="hidden" name="id" value="{if !empty($myuser.id)}{$myuser.id}{/if}" >
+					</div>
+				</div>
+                                <div class="layui-form-item">
+					<label class="layui-form-label">手机号码</label>
+					<div class="layui-input-block">
+                                            {if !empty($myuser.mobile)}{$myuser.mobile}{/if}
+					</div>
+				</div>
+                                <div class="layui-form-item">
+					<label class="layui-form-label">余额</label>
+					<div class="layui-input-block">
+						{if !empty($myuser.credit)}{$myuser.credit}{else/}0.00{/if}
+						
+					</div>
+				</div>
+                                <div class="layui-form-item">
+					<label class="layui-form-label">积分</label>
+					<div class="layui-input-block">
+						{if !empty($myuser.credit2)}{$myuser.credit2}{else/}0.00{/if}
+						
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">充值</label>
+					<div class="layui-input-block">
+						<input type="radio" name="type" value="1" title="余额" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><span>余额</span></div>
+						<input type="radio" name="type" value="2" title="积分"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><span>积分</span></div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">类型</label>
+					<div class="layui-input-block">
+						<input type="radio" name="vary" value="1" title="增加" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><span>增加</span></div>
+						<input type="radio" name="vary" value="2" title="减少"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><span>减少</span></div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">充值金额</label>
+					<div class="layui-input-block">
+                                            <input type="text" name="num"  autocomplete="off" class="layui-input" value="" placeholder="请输入充值金额">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <button class="layui-btn" onclick='user_recharge()'>立即提交</button>
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+<script type="text/javascript" src="/static/common/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript">
+        
+	layui.use(['form','upload'],function(){
+         layui.upload({ 
+             url: '/server/fileupload.php',//上传接口 
+             success: function(res){
+                if(res.result){
+                    $('.avatar').val(res.result);
+                    $('.myimg').attr('src','/server/'+res.result);                    
+                }else{
+                    alert('上传失败');
+                }
+              console.log(res.result) 
+            } 
+         });
+
+	});
+function user_recharge(){  //
+    var id=$("input[name='id']").val();
+    var num=$("input[name='num']").val();
+    var type=$('input:radio[name="type"]:checked').val();
+    var vary=$('input:radio[name="vary"]:checked').val();
+  
+        $.ajax({
+            type: 'POST',
+            url: '/back/user/recharge',
+            data:{
+              id:id,
+              num:num,
+              type:type,
+              vary:vary,
+            },
+            success: function(data){
+                 if(data.type==1){
+                    layer.msg(data.msg);
+                }else{
+                    layer.msg(data.msg);
+                }
+
+            },
+            error: function(xhr){
+                layer.msg('error');
+            }
+        });
+}            
+</script>
+</body>
+</html>

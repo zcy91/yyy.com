@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>个人信息</title>
+	<meta name="renderer" content="webkit">	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">	
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="format-detection" content="telephone=no">	
+	<link rel="stylesheet" type="text/css" href="/static/common/layui/css/layui.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/common/bootstrap/css/bootstrap.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/common/global.css" media="all">
+	<link rel="stylesheet" type="text/css" href="/static/css/personal.css" media="all">
+</head>
+<body>
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<header class="larry-personal-tit">
+			<span>权限管理-权限设置</span>
+		</header><!-- /header -->
+		<div class="larry-personal-body clearfix">
+			<form class="layui-form col-lg-5" style="width: 100%;"  onsubmit="return false;">
+				<div class="layui-form-item">
+					<label class="layui-form-label">名称</label>
+					<div class="layui-input-block">
+						<input type="text" name="name"  autocomplete="off" class="layui-input" value="{if !empty($myadmin_level.name)}{$myadmin_level.name}{/if}"  placeholder="输入等级名称">
+						<input type="hidden" name="id" value="{if !empty($myadmin_level.id)}{$myadmin_level.id}{/if}" >
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">等级</label>
+					<div class="layui-input-block">
+                                            <input type="text" name="level"  autocomplete="off" class="layui-input" value="{if !empty($myadmin_level.level)}{$myadmin_level.level}{/if}" placeholder="输入等级">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">权限</label>
+					<div class="layui-input-block">
+                                            <div id="showbox_0" onclick="showbox(0)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                        </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <label class="">我的面板</label></br>
+                                              <div  id="showbox_1" onclick="showbox(1)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_1" type="checkbox" name="power[]" {if !empty($mypower) && in_array('admin',$mypower)}checked="checked"{/if} value='admin' title="我的面板"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_1" type="checkbox" name="power[]" {if !empty($mypower) && in_array('admin&index',$mypower)}checked="checked"{/if} value='admin&index' title="个人信息"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_1" type="checkbox" name="power[]" {if !empty($mypower) && in_array('admin&upadmin',$mypower)}checked="checked"{/if} value='admin&upadmin' title="个人信息修改"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_1" type="checkbox" name="power[]" {if !empty($mypower) && in_array('admin&changepwd',$mypower)}checked="checked"{/if} value='admin&changepwd' title="修改密码"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_1" type="checkbox" name="power[]" {if !empty($mypower) && in_array('admin&adminlevel',$mypower)}checked="checked"{/if} value='admin&adminlevel' title="权限管理"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_1" type="checkbox" name="power[]" {if !empty($mypower) && in_array('admin&adminleveladd',$mypower)}checked="checked"{/if} value='admin&adminleveladd' title="添加等级"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_1" type="checkbox" name="power[]" {if !empty($mypower) && in_array('admin&adminlist',$mypower)}checked="checked"{/if} value='admin&adminlist' title="管理员列表"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_1" type="checkbox" name="power[]" {if !empty($mypower) && in_array('admin&adminadd',$mypower)}checked="checked"{/if} value='admin&adminadd' title="添加管理员"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                        </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <label class="">用户管理</label></br>
+                                              <div  id="showbox_2" onclick="showbox(2)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_2" type="checkbox" name="power[]" {if !empty($mypower) && in_array('user',$mypower)}checked="checked"{/if} value='user' title="用户管理"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_2" type="checkbox" name="power[]" {if !empty($mypower) && in_array('user&userlist',$mypower)}checked="checked"{/if} value='user&userlist' title="用户列表"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_2" type="checkbox" name="power[]" {if !empty($mypower) && in_array('user&userlevel',$mypower)}checked="checked"{/if} value='user&userlevel' title="等级列表"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_2" type="checkbox" name="power[]" {if !empty($mypower) && in_array('user&useradd',$mypower)}checked="checked"{/if} value='user&useradd' title="添加用户"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_2" type="checkbox" name="power[]" {if !empty($mypower) && in_array('user&userleveladd',$mypower)}checked="checked"{/if} value='user&userleveladd' title="添加等级"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_2" type="checkbox" name="power[]" {if !empty($mypower) && in_array('user&recharge',$mypower)}checked="checked"{/if} value='user&recharge' title="充值金额"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                        </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <label class="">内容管理</label></br>
+                                              <div  id="showbox_3" onclick="showbox(3)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article',$mypower)}checked="checked"{/if} value='article' title="内容管理"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&articlelist',$mypower)}checked="checked"{/if} value='article&articlelist' title="文章列表"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&commentlist',$mypower)}checked="checked"{/if} value='article&commentlist' title="评论列表"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&adlist',$mypower)}checked="checked"{/if} value='article&adlist' title="轮播广告"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&articleadd',$mypower)}checked="checked"{/if} value='article&articleadd' title="添加修改文章"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&commentadd',$mypower)}checked="checked"{/if} value='article&commentadd' title="添加修改评论"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&adadd',$mypower)}checked="checked"{/if} value='article&adadd' title="添加修改广告"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&articledel',$mypower)}checked="checked"{/if} value='article&articledel' title="删除文章"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&commentdel',$mypower)}checked="checked"{/if} value='article&commentdel' title="删除评论"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_3" type="checkbox" name="power[]" {if !empty($mypower) && in_array('article&addel',$mypower)}checked="checked"{/if} value='article&addel' title="删除广告"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                        </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <label class="">商品管理</label></br>
+                                              <div  id="showbox_4" onclick="showbox(4)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_4" type="checkbox" name="power[]" {if !empty($mypower) && in_array('goods',$mypower)}checked="checked"{/if} value='goods' title="商品管理"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_4" type="checkbox" name="power[]" {if !empty($mypower) && in_array('goods&classifylist',$mypower)}checked="checked"{/if} value='goods&classifylist' title="商品分类"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_4" type="checkbox" name="power[]" {if !empty($mypower) && in_array('goods&goodslist',$mypower)}checked="checked"{/if} value='goods&goodslist' title="商品列表"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_4" type="checkbox" name="power[]" {if !empty($mypower) && in_array('goods&lamblist',$mypower)}checked="checked"{/if} value='goods&lamblist' title="羊羔列表"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_4" type="checkbox" name="power[]" {if !empty($mypower) && in_array('goods&selllamblist',$mypower)}checked="checked"{/if} value='goods&selllamblist' title="买卖羊羔"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_4" type="checkbox" name="power[]" {if !empty($mypower) && in_array('goods&classifyadd',$mypower)}checked="checked"{/if} value='goods&classifyadd' title="添加分类"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_4" type="checkbox" name="power[]" {if !empty($mypower) && in_array('goods&goodsadd',$mypower)}checked="checked"{/if} value='goods&goodsadd' title="添加商品"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_4" type="checkbox" name="power[]" {if !empty($mypower) && in_array('goods&sellmoney',$mypower)}checked="checked"{/if} value='goods&sellmoney' title="打款操作"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                        </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <label class="">订单管理</label></br>
+                                              <div  id="showbox_5" onclick="showbox(5)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_5" type="checkbox" name="power[]" {if !empty($mypower) && in_array('order',$mypower)}checked="checked"{/if} value='order' title="订单管理"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_5" type="checkbox" name="power[]" {if !empty($mypower) && in_array('order&orderlist',$mypower)}checked="checked"{/if} value='order&orderlist' title="订单列表"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                          </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <label class="">资金明细</label></br>
+                                              <div  id="showbox_6" onclick="showbox(6)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_6" type="checkbox" name="power[]" {if !empty($mypower) && in_array('capital',$mypower)}checked="checked"{/if} value='capital' title="资金明细"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_6" type="checkbox" name="power[]" {if !empty($mypower) && in_array('capital&withdrawals',$mypower)}checked="checked"{/if} value='capital&withdrawals' title="提现申请"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_6" type="checkbox" name="power[]" {if !empty($mypower) && in_array('capital&moneylog',$mypower)}checked="checked"{/if} value='capital&moneylog' title="资金日志"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_6" type="checkbox" name="power[]" {if !empty($mypower) && in_array('capital&paymoney',$mypower)}checked="checked"{/if} value='capital&paymoney' title="打款操作"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                          </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <label class="">插件管理</label></br>
+                                              <div  id="showbox_7" onclick="showbox(7)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_7" type="checkbox" name="power[]" {if !empty($mypower) && in_array('addons',$mypower)}checked="checked"{/if} value='addons' title="插件管理"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_7" type="checkbox" name="power[]" {if !empty($mypower) && in_array('addons&prize',$mypower)}checked="checked"{/if} value='addons&prize' title="抽奖活动"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_7" type="checkbox" name="power[]" {if !empty($mypower) && in_array('addons&prizeadd',$mypower)}checked="checked"{/if} value='addons&prizeadd' title="抽奖活动添加"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                           </div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                            <label class="">系统设置</label></br>
+                                              <div  id="showbox_8" onclick="showbox(8)" class="layui-unselect layui-form-checkbox"><span>全选</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_8" type="checkbox" name="power[]" {if !empty($mypower) && in_array('set',$mypower)}checked="checked"{/if} value='set' title="系统设置"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_8" type="checkbox" name="power[]" {if !empty($mypower) && in_array('set&setting',$mypower)}checked="checked"{/if} value='set&setting' title="基本参数设置"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_8" type="checkbox" name="power[]" {if !empty($mypower) && in_array('set&wxset',$mypower)}checked="checked"{/if} value='set&wxset' title="微信设置"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_8" type="checkbox" name="power[]" {if !empty($mypower) && in_array('set&menu',$mypower)}checked="checked"{/if} value='set&menu' title="微信菜单设置"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_8" type="checkbox" name="power[]" {if !empty($mypower) && in_array('set&emailset',$mypower)}checked="checked"{/if} value='set&emailset' title="邮箱设置"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_8" type="checkbox" name="power[]" {if !empty($mypower) && in_array('set&smsset',$mypower)}checked="checked"{/if} value='set&smsset' title="短信接口设置"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_8" type="checkbox" name="power[]" {if !empty($mypower) && in_array('set&adminlog',$mypower)}checked="checked"{/if} value='set&adminlog' title="系统日志管理"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                              <input class="checkbox_8" type="checkbox" name="power[]" {if !empty($mypower) && in_array('set&sqlselect',$mypower)}checked="checked"{/if} value='set&sqlselect' title="SQL命令行工具"><div class="layui-unselect layui-form-checkbox"><span>写作</span><i class="layui-icon"></i></div>
+                                           </div>
+				</div>
+				
+				
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+                                                <button class="layui-btn" onclick="admin_level_add()" >立即提交</button>
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+<script type="text/javascript" src="/static/common/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript">
+	layui.use(['form','upload'],function(){
+         var form = layui.form();
+         layui.upload({ 
+             url: '' ,//上传接口 
+             success: function(res){
+              //上传成功后的回调 
+              console.log(res) 
+            } 
+         });
+
+	});
+        function showbox(num){
+            if(num==0){
+                var showbox_class = $('#showbox_0').attr("class");
+                var showbox_class_arr = showbox_class.split(" ");
+                if(showbox_class_arr[2]==null){
+                    $('input:checkbox').each(function() {
+                        $(this).attr('checked', true);
+                    });
+                    $(".layui-form-checkbox").addClass('layui-form-checked');
+                }else{
+                    $('input:checkbox').each(function () {
+                            //$(this).removeAttr("checked");
+                    });
+                    $(".layui-form-checkbox").removeClass('layui-form-checked');
+                }
+            }
+            if(num>0){
+                var showbox_class = $('#showbox_'+num).attr("class");
+                var showbox_class_arr = showbox_class.split(" ");
+                if(showbox_class_arr[2]==null){
+                    $('.checkbox_'+num+':checkbox').each(function(){
+                        $(this).attr('checked', true);
+                        $(this).next().addClass('layui-form-checked');
+                    });
+                    $('#showbox_'+num).addClass('layui-form-checked');
+                }else{
+                    $('.checkbox_'+num+':checkbox').each(function () {
+                            //$(this).removeAttr("checked");
+                            $(this).next().removeClass('layui-form-checked');
+                    });
+                    $('#showbox_'+num).removeClass('layui-form-checked');
+                }
+            }
+            
+        }
+        
+    //
+function admin_level_add(){  //
+    var name=$("input[name='name']").val();
+    var id =$("input[name='id']").val();
+    var level=$("input[name='level']").val();
+    power =new Array();
+    var i = 0 ; 
+    $.each($('input:checkbox'),function(){
+                if(this.checked){
+                    power[i]=$(this).val();
+                    //alert($(this).val());
+                    i++;
+                }
+            });
+        $.ajax({
+            type: 'POST',
+            url: '/back/admin/adminleveladd',
+            data:{
+              name:name,
+              id:id,
+              level:level,
+              power:power
+            },
+            success: function(data){
+                 if(data.type==1){
+                    layer.msg(data.msg);
+                }else{
+                    layer.msg(data.msg);
+                }
+
+            },
+            error: function(xhr){
+                layer.msg('error');
+            }
+        });
+}    
+</script>
+</body>
+</html>

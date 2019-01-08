@@ -1,0 +1,40 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>了解我们</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-discovery">
+        <!--置顶文章-->
+        <a href="https://v.qq.com/x/page/f0340njqnqo.html" class="discovery-title">
+            <img src="/static/home/images/disc-1.jpg" />
+        </a>
+        <!--置顶文章结束-->
+        <!--活动列表-->
+        <ul class="discovery-list">
+            {volist name='list' id= 'vo'}
+            <li>
+                <a href="{$vo.site}">
+                    <img style='height: 3rem' src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" />
+                    <p>{$vo.title}</p>
+                </a>
+            </li>
+            {/volist}
+        </ul>
+        <!--活动列表结束-->
+    </div>
+    <!--内容主体结束-->
+    <!--公共底部-->
+    <div class="m-footer">
+        {include file="footer"/}
+    </div>
+    <!--公共底部结束-->
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>出售羔羊 - 食花百草羊</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="/static/home/css/base.css" rel="stylesheet" />
+    <link href="/static/home/css/currency.css" rel="stylesheet" />
+    <link href="/static/home/css/index.css" rel="stylesheet" />
+    <script src="/static/home/js/jquery1.10.2.js"></script>
+    <script src="/static/home/js/common.js"></script>
+    <script src="/static/home/js/fontSize.js"></script>
+    <script src="/static/home/layer/layer.js"></script>
+    <link href="/static/home/css/font-awesome.css" rel="stylesheet" />
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>出售羔羊</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-soldsheep">
+        <!--羊照片-->
+        <div class="soldsheep-photo">
+            <div class="photoBox">
+                <div class="photoBox-int">
+                    <img src="/static/home/images/sheep.jpg" />
+                </div>
+            </div>
+            <div class="photoTips" {if $islamb==true}style=''{else /} style='background: #808080;'{/if}>{if $islamb==true}已成熟{else /}未成熟{/if}</div>
+        </div>
+        <!--羊照片结束-->
+        <!--羊卖价-->
+        <div class="soldsheep-money">
+            <h1>{$mylamb.lambname}</h1>
+            <input type="text" id="lambmoney" placeholder="请填写您的意向价格" class="money-numb" />
+            <h2>出售方式</h2>
+            <ul class="money-info">
+                <li>
+                    <label>
+                        <span>卖给公司</span>
+                        <input type="radio" name="buyid" value="0" checked="checked" />
+                    </label>
+                </li>
+            </ul>
+            <div class="money-tips">处理办法包括：目前仅支持卖给公司——<a href="javascript:;">查看详情</a></div>
+        </div>
+        <!--羊卖价结束-->
+        <!--提交按钮-->
+        <div class="soldsheep-btn">
+            {if $islamb==true}<a href="javascript:sellLamb();">确认提交</a>{else /}<p>未成熟，暂不能出售</p>{/if}
+            <!--<p>未成熟，暂不能出售</p>-->
+        </div>
+        <!--提交按钮结束-->
+    </div>
+    <!--内容主体结束-->
+    <script>
+        function sellLamb() {
+                var buyid = $('input:radio[name="buyid"]:checked').val();
+                var lambmoney = $('#lambmoney').val();
+                if(lambmoney==''){
+                    layer.msg('出售价格不能为空');
+                    return ;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/selllamb")}',
+                    data:{
+                        buyid:buyid,
+                        lambid:{$mylamb.id},
+                        lambmoney:lambmoney
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg,function(){
+                            //关闭后的操作
+                            window.location.href='{:url("/index/user/user")}'
+                            });
+                            
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+                resetCode(); //倒计时
+            }
+        
+    </script>
+</body>
+</html>

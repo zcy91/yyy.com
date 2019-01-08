@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+<title>{$act['title']}</title>
+
+<link rel="stylesheet" type="text/css" href="/static/addons/prize/css/index.css">
+
+</head>
+<body>
+
+<div class="zp-box">
+	<div class="dp-box">
+		<img src="/static/addons/prize/img/activity-lottery-{$listnum}.png" class="g-lottery-img">
+	</div>
+	<div class="zhizhen">
+		<img src="/static/addons/prize/img/zhizhen.png">
+		<div id="cishu-text">点击开始<br><span id="cishu">0</span>次</div>
+	</div>
+</div>
+
+<div class="jl">
+	<p>
+		<span id="zjjl">中奖纪录》</span>|<span id="look-gz">查看规则》</span>
+	</p>
+</div>
+<div class="gdbox">
+	<strong>中奖用户</strong>
+	<p id="tit">
+		<span>手机号</span>
+		<span>获得奖励</span>
+	</p>
+	<div class="zhongj-bbk">
+		<div class="zhongj-bb">
+			<div class="zhongj-bbl" id="colee" style="overflow:hidden;">
+				<div id="colee1"></div>
+				<div id="colee2"></div>
+			</div>
+			<div class="zhongj-bbr" id="coleer" style="overflow:hidden;">
+				<div id="coleer1" ></div>
+				<div id="coleer2"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--遮罩&弹框-->
+<div class="zz"></div>
+<!--超级返现规则-->
+<div class="cjfx">
+	<img src="/static/addons/prize/img/close.png" class="cjgz-c">
+	<img src="/static/addons/prize/img/cjgz.png" id="cjgz-img">
+</div>
+<!--转盘规则-->
+<div class="zpgz">
+	<img src="/static/addons/prize/img/close.png" class="cjgz-c">
+	<img src="/static/addons/prize/img/zpgz.png" id="cjgz-img">
+</div>
+<!--中奖纪录-->
+<div class="zj">
+	<img src="/static/addons/prize/img/close.png" class="cjgz-c">
+	<img src="/static/addons/prize/img/zjjl-img.png" id="cjgz-img">
+	<div class="zj-content">
+		<p>
+			<span id="mytime">时间</span>
+			<span id="myjl">获得奖励</span>
+		</p>
+		<ul>
+			<li><span>2017.10.31</span><span></span></li>
+		</ul>
+	</div>
+</div>
+<!-- 无次数提示弹框 -->
+<div class="wcs">
+	<img src="/static/addons/prize/img/close.png" class="cjgz-c">
+	<img src="/static/addons/prize/img/wcs-tk.png" class="wcs-img">
+	<img src="/static/addons/prize/img/ok-img.png" class="ok-img">
+</div>
+<!-- 当日是否投资弹框 -->
+<div class="today">
+	<img src="/static/addons/prize/img/close.png" class="cjgz-c">
+	<img src="/static/addons/prize/img/tz-tk.png" class="tz-img">
+	<img src="/static/addons/prize/img/ok-img.png" class="ok-img">
+</div>
+<!-- 抽到奖励弹框 -->
+<div class="jl-tk">
+	<img src="/static/addons/prize/img/close.png" class="cjgz-c">
+	<img src="/static/addons/prize/img/zj-tk.png" class="zj-img">
+	<img src="/static/addons/prize/img/ok-img.png" class="ok-img">
+	<p class="texts">恭喜您已获得<br>双季丰满减红包满1000可用50元</p>
+</div>
+<script type="text/javascript" src="/static/addons/prize/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/addons/prize/js/jquery.rotate.js"></script>
+<script type="text/javascript" src="/static/addons/prize/js/jquery.easing.min.js"></script>
+<script type="text/javascript" src="/static/addons/prize/js/jquery.jsonp.js"></script>
+<script type="text/javascript" src="/static/addons/prize/js/index.js"></script>
+<script>
+    //抽奖代码
+$(function() {
+	var $btn = $('.g-lottery-img'); // 旋转的div
+	var cishu = {$takenum}; //初始次数，由后台传入
+	$('#cishu').html(cishu); //显示还剩下多少次抽奖机会
+	var isture = 0; //是否正在抽奖
+	var clickfunc = function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '/addons/prize/getprize',
+                    data:{
+                        aid:{$aid}
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        var data = data.num;
+                       switch (data) {
+                            {volist name='list' id='vo' key="k"}
+                                {if $listnum<=8}
+                                    case {$vo.weight}:
+                                        rotateFunc({$vo.weight},{$k*$jiaodu}-{$jiaodu} , '{$vo.name}');
+                                        break;
+                                {else/}
+                                    case {$vo.weight}:
+                                        rotateFunc({$vo.weight},{$k*$jiaodu}-{$jiaodu} , '{$vo.name}');
+                                        break;
+                                {/if}
+                                case 13:
+                                rotateFunc(13,{$jiaodu/2} , '再接再厉');
+                                break;
+                            {/volist}            
+                        }
+                    },
+                    error: function(xhr){
+                        //layer.msg('error');
+                    }
+                });
+		
+	}
+	$(".zhizhen").click(function() {
+		//判断是否投资然后是fou抽奖========================================================
+		var touzi = "没投资11";
+		if (touzi == "没投资") {
+			$(".zz").show();
+			$(".today").show();
+			$(".cjgz-c").on('click', function() {
+				$(".zz").hide();
+				$(".today").hide();
+			});
+			$(".ok-img").on('click', function() {
+				$(".zz").hide();
+				$(".today").hide();
+			});
+		} else {
+			$(".zz").hide()
+			$(".today").hide();
+			if (isture) return; // 如果在执行就退出
+			isture = true; // 标志为 在执行
+			if (cishu <= 0) { //当抽奖次数为0的时候执行
+				$(".zz").show();
+				$(".wcs").show();
+				$(".ok-img").on('click', function() {
+					$(".wcs").hide();
+					$(".zz").hide();
+				});
+				// alert("没有次数了");
+				$('#cishu').html(0); //次数显示为0
+				isture = false;
+			} else { //还有次数就执行
+				cishu = cishu - 1; //执行转盘了则次数减1
+				if (cishu <= 0) {
+					cishu = 0;
+				}
+				$('#cishu').html(cishu);
+				clickfunc();
+			}
+		}
+	});
+	var rotateFunc = function(awards, angle, text) {
+		isture = true;
+		$btn.stopRotate();
+		$btn.rotate({
+			angle: 0, //旋转的角度数
+			duration: 4000, //旋转时间
+			animateTo: angle + 1440, //给定的角度,让它根据得出来的结果加上1440度旋转
+			callback: function() {
+				isture = false; // 标志为 执行完毕
+				$(".texts").html("恭喜您，已获得<br>" + text);
+					// console.log(text)
+				$(".zz").show();
+				$(".jl-tk").show();
+				$(".cjgz-c").on('click', function() {
+					$(".zz").hide();
+					$(".jl-tk").hide();
+				});
+				$(".ok-img").on('click', function() {
+					$(".zz").hide();
+					$(".jl-tk").hide();
+				});
+			}
+		});
+	};
+});
+</script>
+</body>
+</html>

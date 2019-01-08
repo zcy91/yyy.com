@@ -1,0 +1,165 @@
+{include file="header"/}
+</head>
+<style>
+    .coupon-title li{
+        width: 25%;
+    }
+</style>
+<body style="position:relative; background:#f2f2f2">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>我的优惠券</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-coupon">
+        <!--优惠券标题-->
+        <ul class="coupon-title">
+            <li class="ahover">未使用</li>
+            <li>已使用</li>
+            <li>已过期</li>
+            <li>领券中心</li>
+        </ul>
+        <!--优惠券标题结束-->
+        <!---优惠券内容-->
+        <ul class="coupon-list">
+            <li class="ahover">
+                {volist name='list' id='vo'}
+                    {if $vo.used==0 && ($vo.etime >= time() || $vo.etime == 0)}
+                    <div class="couponBox">
+                        <a href="{:url('index/shop/glist')}">
+                            {if $vo.islimit==0}
+                                <h1><span class="currencyTitle">通用券</span>{$vo.couponname}</h1>
+                                <div class="couponCondition">全场通用券，满{$vo.enough}元可用</div>
+                            {else/}
+                                <h1><span class="destineTitle">指定券</span>{$vo.couponname}</h1>
+                                <div class="couponCondition">指定商品，满{$vo.enough}元可用</div>
+                            {/if}
+                            <div class="couponTime">{php}echo date("Y.m.d",$vo['stime']);{/php}-{php}if($vo['etime'] == 0){echo '长期有效';}else echo date("Y.m.d",$vo['etime']);{/php}</div>
+                            <div class="couponMoney {if $vo.islimit==0}currencyCP{else/}destineCP{/if} ">
+                                {if $vo.backtype==0}
+                                    <p><i class="fa fa-rmb"></i><u>{php}echo floatval($vo['deduct']){/php}</u></p>
+                                {else/}
+                                    <p><u>{php}echo floatval($vo['deduct']){/php}</u>折</p>
+                                {/if}
+                                <span>立即使用<i class="fa fa-angle-right"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                    {/if}
+                {/volist}
+            </li>
+            <li>
+                {volist name='list' id='vo'}
+                    {if $vo.used==1}
+                    <div class="couponBox">
+                        <a href="javascript:;">
+                            {if $vo.islimit==0}
+                                <h1><span class="useTitle">通用券</span>{$vo.couponname}</h1>
+                                <div class="couponCondition">全场通用券，满{$vo.enough}元可用</div>
+                            {else/}
+                                <h1><span class="useTitle">指定券</span>{$vo.couponname}</h1>
+                                <div class="couponCondition">指定商品，满{$vo.enough}元可用</div>
+                            {/if}
+                            <div class="couponTime">{php}echo date("Y.m.d",$vo['stime']);{/php}-{php}if($vo['etime'] == 0){echo '长期有效';}else echo date("Y.m.d",$vo['etime']);{/php}</div>
+                            <div class="couponMoney useCP ">
+                                {if $vo.backtype==0}
+                                    <p><i class="fa fa-rmb"></i><u>{php}echo floatval($vo['deduct']){/php}</u></p>
+                                {else/}
+                                    <p><u>{php}echo floatval($vo['deduct']){/php}</u>折</p>
+                                {/if}
+                                <span>已使用<i class="fa fa-exclamation"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                    {/if}
+                {/volist}
+            </li>
+            <li>
+                {volist name='list' id='vo'}
+                    {if $vo.etime < time() && $vo.etime != 0}
+                    <div class="couponBox">
+                        <a href="javascript:">
+                            {if $vo.islimit==0}
+                                <h1><span class="useTitle">通用券</span>{$vo.couponname}</h1>
+                                <div class="couponCondition">全场通用券，满{$vo.enough}元可用</div>
+                            {else/}
+                                <h1><span class="useTitle">指定券</span>{$vo.couponname}</h1>
+                                <div class="couponCondition">指定商品，满{$vo.enough}元可用</div>
+                            {/if}
+                            <div class="couponTime">{php}echo date("Y.m.d",$vo['stime']);{/php}-{php}echo date("Y.m.d",$vo['etime']);{/php}</div>
+                            <div class="couponMoney useCP ">
+                                {if $vo.backtype==0}
+                                    <p><i class="fa fa-rmb"></i><u>{php}echo floatval($vo['deduct']){/php}</u></p>
+                                {else/}
+                                    <p><u>{php}echo floatval($vo['deduct']){/php}</u>折</p>
+                                {/if}
+                                <span>已过期<i class="fa fa-exclamation"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                    {/if}
+                {/volist}
+            </li>
+            <li>
+                {volist name='couponlsit' id='vo'}
+                {if $vo.total > 0 || $vo.total == -1}
+                <div class="couponBox">
+                    <a onclick=" coupon_insert({$vo.id},this);">
+                        {if $vo.islimit==0}
+                        <h1><span class="currencyTitle">通用券</span>{$vo.couponname}</h1>
+                        <div class="couponCondition">全场通用券，满{$vo.enough}元可用</div>
+                        {else/}
+                        <h1><span class="currencyTitle">指定券</span>{$vo.couponname}</h1>
+                        <div class="couponCondition">指定商品，满{$vo.enough}元可用</div>
+                        {/if}
+                        {if $vo['total'] != -1}<div class="couponCondition"> 剩余：<strong class="total">{$vo.total} </strong>张！</div>{/if}
+                        <div class="couponTime">{php}echo date("Y.m.d",$vo['stime']);{/php}-{php}if($vo['etime'] == 0)echo '长期有效';else echo date("Y.m.d",$vo['etime']);{/php}</div>
+                        <div class="couponMoney {if $vo.islimit==0}currencyCP{else/}destineCP{/if} ">
+                            {if $vo.backtype==0}
+                            <p><i class="fa fa-rmb"></i><u>{php}echo floatval($vo['deduct']){/php}</u></p>
+                            {else/}
+                            <p><u>{php}echo floatval($vo['deduct']){/php}</u>折</p>
+                            {/if}
+                            <span>快来抢啦~<i class="fa fa-exclamation"></i></span>
+                        </div>
+                    </a>
+                </div>
+                {/if}
+                {/volist}
+            </li>
+        </ul>
+        <!---优惠券内容结束-->
+    </div>
+    <script>
+        function coupon_insert(id,obj){
+            var total = $(obj).find('strong').text();
+            var id = id;
+            $.ajax({
+                type: 'get',
+                url: '/index/user/coupon_insert'+'&id='+id,
+               async:false,
+                success: function(data){
+                    if(data.type==1){
+                        layer.msg(data.msg);
+                        total = total -1 ;
+                        $(obj).find('strong').text(total)
+                        // setTimeout('location.reload()', 2000);
+                    }else{
+                        layer.msg(data.msg);
+                        setTimeout('location.reload()', 2000);
+                    }
+
+                },
+                error: function(xhr){
+                    layer.msg('error');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

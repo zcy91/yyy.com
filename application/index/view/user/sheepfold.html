@@ -1,0 +1,61 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>我的羊圈</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-sheepfold">
+
+        <!--收益总和-->
+        <div class="sheepfold-sum">
+            <ul class="sum-list">
+                <li>
+                    <p>{$zongnum}</p>
+                    <span>羊只总数</span>
+                </li>
+                <li>
+                    <p>{$shunum}</p>
+                    <span>已成熟</span>
+                </li>
+                <li class="buyBtn">
+                    <a href="{:url('/index/shop/glist')}">
+                        <i class="fa fa-rmb"><u>再养一只</u></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!--记录总和结束-->
+
+        <!--羊只列表-->
+        <ul class="sheepfold-list">
+            {volist name='list' id='vo'}
+            <li>
+                <img src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" class="sheepfold-photo" />
+                <div class="sheepfold-name">
+                    <p>{$vo.lambname}</p>
+                    <span>生长天数：<u>{$vo.czday}</u>天</span>
+                </div>
+                <a href="{:url('/index/user/sheepdetail',array('id'=>$vo.id))}" class="sheepfold-btn">查看详情</a>
+            </li>
+            {/volist}
+            <!--<li class="sheepfold-plus">
+            <a href="buysheep.html" class="plus-link"><i class="fa fa-plus"></i></a>
+            <div class="plus-text">
+                点击添加
+            </div>
+        </li>-->
+        </ul>
+        <!--羊只列表结束-->
+
+    </div>
+    <!--内容主体结束-->
+
+</body>
+</html>

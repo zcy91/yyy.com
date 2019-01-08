@@ -1,0 +1,273 @@
+{include file="header"/}
+</head>
+<style>
+    #protocol{
+        position: relative;
+
+    }
+</style>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>{$webtitle}</p>
+        <a href="javascript:;" class="head-info" style="display: none">
+            <i class="fa fa-envelope"></i>
+        </a>
+        <a href="{:url('index/user/xiaoxilog')}" class="nav-link" ><span class="xiaoxi">消息</span><span class="nav-counter nav-counter-blue" id="count">{$count}</span></a>
+        <!--<a href="http://kf.workerman.net" web-id="baidu.com" id="workerman-kefu">在线客服</a>-->
+        <script src="http://kf.workerman.net/static/layui/layui.js"></script>
+        <!--<script src="http://kf.workerman.net/static/layui/workerman-kefu.js"></script>-->
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-user">
+        <!--头像信息-->
+        <div class="user-hdinfo">
+            <a href="{:url('/index/user/myinfo')}" class="hdinfo-img">
+                <img src="{php}if(!empty($member['avatar'])) echo imgUrl($member['avatar']);else echo imgUrl(''){/php}" />
+            </a>
+            <div class="hdinfo-name"><span>{$member.username}</span><u>（{$member.mobile}）</u></div>
+            <ul class="hdinfo-money">
+                <li>
+                    <span onclick="window.location='{:url('/index/user/wallet')}'">{$member.credit}</span>
+                    <p>余额（元）</p>
+                </li>
+                <li>
+                    <span onclick="window.location='{:url('/index/user/sheepfold')}'">{$lambnum}</span>
+                    <p>羊羊（只）</p>
+                </li>
+            </ul>
+        </div>
+        <!--头像信息结束-->
+        <!--功能列表-->
+        <ul class="user-ftlist">
+           {if $member['is_agent'] == 1}
+            <li>
+                <a href="{:url('/index/user/agentlist')}">
+                    <i class="fa fa-book ftlist-icon"></i>
+                    <span>代理证书</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            {/if}
+            <li>
+                <a href="{:url('/index/user/photograph')}">
+                    <i class="fa fa-play ftlist-icon"></i>
+                    <span>摄影大赛</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/shop/glist')}">
+                    <i class="fa fa-shopping-cart ftlist-icon"></i>
+                    <span>我要领羊</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/wallet')}">
+                    <i class="fa fa-jpy ftlist-icon"></i>
+                    <span>我的钱包</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+<!--            <li>
+                <a href="javascript:;">
+                    <i class="fa fa-database ftlist-icon"></i>
+                    <span>我的积分</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>-->
+            <li>
+                <a href="{:url('/index/user/sheepfold')}">
+                    <i class="fa fa-flag ftlist-icon"></i>
+                    <span>我的羊圈</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/coupon')}">
+                    <i class="fa fa-ticket ftlist-icon"></i>
+                    <span>我的优惠券</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+<!--            <li>
+                <a href="{:url('/index/user/recommend')}">
+                    <i class="fa fa-heart ftlist-icon"></i>
+                    <span>推荐记录</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>-->
+            <li>
+                <a href="{:url('/index/user/invite')}">
+                    <i class="fa fa-group ftlist-icon"></i>
+                    <span>邀请好友</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/myorder')}">
+                    <i class="fa fa-th-list ftlist-icon"></i>
+                    <span>我的订单</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/protocollist')}">
+                    <i class="fa fa-file-text ftlist-icon"></i>
+                    <span>我的合同 </span>
+                    {if $protocolcount > 0}<span class="nav-counter nav-counter-blue" id="protocol"> 待签：{$protocolcount}</span>{/if}
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/exchange')}">
+                    <i class="fa fa-align-justify ftlist-icon"></i>
+                    <span>兑换记录</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/contactus')}">
+                    <i class="fa fa-phone-square ftlist-icon"></i>
+                    <span>联系我们</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/mall/mall')}">
+                    <i class="fa fa-shopping-cart ftlist-icon"></i>
+                    <span>积分商城</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/address')}">
+                    <i class="fa fa-map-marker ftlist-icon"></i>
+                    <span>收货地址</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('/index/user/setup')}">
+                    <i class="fa fa-cog ftlist-icon"></i>
+                    <span>帐号安全</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+
+            {if $paystr == 'wechat' }
+            <li id="isapp">
+                <a href="{:url('/index/login/login',array('exit'=>1))}">
+                    <i class="fa fa-minus-circle  ftlist-icon"   style="color: #ED5A98;"></i>
+                    <span>退出</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            {else/}
+            <li id="isapp">
+                <a onclick="appback()">
+                    <i class="fa fa-minus-circle  ftlist-icon"   style="color: #ED5A98;"></i>
+                    <span>退出</span>
+                    <i class="fa fa-angle-right ftlist-enter"></i>
+                </a>
+            </li>
+            {/if}
+        </ul>
+        <!--功能列表结束-->
+    </div>
+    <!--内容主体结束-->
+    <!--公共底部-->
+    <div class="m-footer">
+        {include file="footer"/}
+    </div>
+    <!--公共底部结束-->
+    <script>
+        function appback() {
+            var str = navigator.userAgent;
+            if (str == 'oioos_webkit_android') {
+                if (typeof oioos != 'undefined') {
+                    oioos.logout();
+                    $.ajax({
+                        type :"get",
+                        async :false, //同步请求
+                        url : "{:url('index/login/login')}",
+                        data:{exit:1,ios:1},
+                        success:function(dates){
+                            layer.msg(dates.msg);
+                        },
+                        error:function() {
+                            // alert("失败，请稍后再试！");
+                        }
+                    });
+                    setTimeout(function(){window.location.href = 'http://yang.oioos.com'},2000);
+                } else if (typeof yangJs != 'undefined') {
+                    yangJs.logout();
+                    $.ajax({
+                        type :"get",
+                        async :false, //同步请求
+                        url : "{:url('index/login/login')}",
+                        data:{exit:1,ios:1},
+                        success:function(dates){
+                            layer.msg(dates.msg);
+                        },
+                        error:function() {
+                            // alert("失败，请稍后再试！");
+                        }
+                    });
+                    setTimeout(function(){window.location.href = 'http://yang.oioos.com'},2000);
+                }
+            } else if (str == 'oioos_webkit_ios') {
+                window.location.href = 'ios://logout_by_weixin';
+                $.ajax({
+                    type :"get",
+                    async :false, //同步请求
+                    url : "{:url('index/login/login')}",
+                   data:{exit:1,ios:1},
+                    success:function(dates){
+                       layer.msg(dates.msg);
+                    },
+                    error:function() {
+                        // alert("失败，请稍后再试！");
+                    }
+                });
+                setTimeout(function(){window.location.href = 'http://yang.oioos.com'},2000);
+            }
+        }
+        function back123() {
+            if(typeof(yangJs) != 'undefined'){
+                yangJs.logout();
+
+            }
+            return true;
+        }
+
+        $(document).ready(function() {
+            setInterval("sendData()",1000*60);
+        });
+        function sendData()
+
+        {
+
+            $.ajax({
+                type :"post",
+                async :false, //同步请求
+                url : "{:url('index/user/ajaxxiaoxi')}",
+                timeout:1000,
+                success:function(dates){
+                    $("#count").html(dates);//要刷新的div
+                },
+                error:function() {
+                    // alert("失败，请稍后再试！");
+                }
+            });
+
+        }
+    </script>
+</body>
+</html>

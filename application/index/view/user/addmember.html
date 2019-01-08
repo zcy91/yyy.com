@@ -1,0 +1,188 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>添加好友</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-applic">
+        <!--羊羔照片-->
+        <div class="applic-photo">
+           
+        </div>
+        <!--羊羔照片结束-->
+        <!--羊羔名字-->
+        <div class="soldsheep-money">
+        <div class="money-list">
+                <select name="member_type" id="member_type">
+                    <option value="1">根据用户ID查找</option>
+                    <option value="2">根据用户邀请码查找</option>
+                    <option value="3">根据用户手机号查找</option>
+                </select>
+                <i class="fa fa-caret-down"></i>
+            </div>
+           
+            <div class="money-tips" style="border: 1px solid #e1e1e1;">
+                <input type="text" id="member_val" name="member_val" value="" placeholder="请输入用户信息">
+            </div>
+        </div>
+        <!--羊羔名字结束-->
+        <div class="soldsheep-btn">
+            <a  style="display: block;    width: 3rem;    margin: 0 auto;    padding: .2rem 0;    text-align: center;    font-size: .3rem;
+            color: #fff;    border-radius: .1rem;    background: #83ae3f;" href="javascript:getMember();">查询添加</a>
+            <!--<p>未成熟，暂不能出售</p>-->
+        </div>
+        <!--申请按钮-->
+        <div class="applic-btn">
+            <input style="display: block;    width: 3rem;    margin: 0 auto;    padding: .2rem 0;    text-align: center;    font-size: .3rem;
+            color: #fff;    border-radius: .1rem;    background: #83ae3f;" type="button" onclick="scancode(1)" value="扫码添加" />
+        </div>
+        <!--申请按钮结束-->
+        
+        
+    </div>
+    <!--内容主体结束-->
+    <script>
+        function getMember() {
+                var member_type = $('#member_type').val();
+                var member_val = $('#member_val').val();
+                if(member_val==''){
+                      layer.msg('用户信息不能为空');
+                      return false;
+                }
+                //先查找用户信息
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/getmember")}',
+                    data:{
+                        member_type:member_type,
+                        member_val:member_val
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            
+                                //示范一个公告层
+                                layer.open({
+                                  type: 1
+                                  ,title: false //不显示标题栏
+                                  ,closeBtn: false
+                                  ,area: '5.5rem;'
+                                  ,shade: 0.8
+                                  ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                                  ,btn: ['确认', '取消']
+                                  ,btnAlign: 'c'
+                                  ,moveType: 1 //拖拽模式，0或者1
+                                  ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定要赠送给好友吗？亲！<br><br>用户id:'+data.data.id+'<br>用户昵称:'+data.data.username+'<br>用户手机:'+data.data.mobile+'<br></div>'
+                                  ,success: function(layero){
+                                    var btn = layero.find('.layui-layer-btn');
+                                    btn.find('.layui-layer-btn0').attr({
+                                      href: 'JavaScript:friendApply('+data.data.id+')'
+                                      
+                                    });
+                                  }
+                                });
+                              
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                
+                
+            });
+        }
+        
+function scancode (type=1){
+    
+	wx.scanQRCode({
+		needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+		scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+		success: function (res) {
+                    if(type==1){
+                        //type=1的话是申请好友
+                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        $.ajax({
+                            type: 'POST',
+                            url: '{:url("/index/user/addmember")}',
+                            data:{
+                                result:result
+                            },
+                            dataType:'json',
+                            success: function(data){
+                                if(data.type==1){
+                                    $("input[name='uid']").val(data.data.id);
+                                    //示范一个公告层
+                                    layer.open({
+                                      type: 1
+                                      ,title: false //不显示标题栏
+                                      ,closeBtn: false
+                                      ,area: '5.5rem;'
+                                      ,shade: 0.8
+                                      ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                                      ,btn: ['确认', '取消']
+                                      ,btnAlign: 'c'
+                                      ,moveType: 1 //拖拽模式，0或者1
+                                      ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">确定要添加该好友吗？<br><br>用户id:'+data.data.id+'<br>用户昵称:'+data.data.username+'<br>用户手机:'+data.data.mobile+'<br></div>'
+                                      ,success: function(layero){
+                                        var btn = layero.find('.layui-layer-btn');
+                                        btn.find('.layui-layer-btn0').attr({
+                                          href: 'JavaScript:friendApply('+data.data.id+')'
+
+                                        });
+                                      }
+                                    });
+                                    
+                                    
+                                }else{
+                                    layer.msg(data.msg);
+                                }
+                            },
+                            error: function(xhr){
+                                //layer.msg('error');
+                            }
+                        });
+                        
+                    }else{
+                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        alert(result); 
+                    }
+                
+                        
+                        
+			
+		}
+	});
+}
+        function friendApply(uid){
+            $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/friendapply")}',
+                    data:{
+                        uid:uid,
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg);
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+        }
+    </script>
+    {include file="share"/}
+</body>
+</html>

@@ -1,0 +1,70 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>我要领养</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-buysheep" style='margin-bottom: 50px;'>
+        <ul class="buysheep-list">
+            {volist name="list" id="vo"}
+            <li class="{if $vo.stock>0}buyNow{else/}buyOverdue{/if}">
+                <!--标题-->
+                <div class="buysheep-title">
+                    <i class="fa fa-star title-icon"></i>
+                    <p class="title-name">{$vo.gname}</p>
+                    {if $vo.stock>0}<p class="title-time">{php}if(!empty($vo['shelftime'])) {echo date("Y-m-d H:i",$vo['shelftime']);}else{ echo date("Y-m-d H:i",$vo['creationtime']); }{/php}开售</p>{/if}
+                    {if $vo.stock>0}<p class="title-presell">预售</p>{else/}<p class="title-presell">售罄</p>{/if}
+                    
+                </div>
+                <!--标题结束-->
+
+                <!--转化率-->
+                <div class="buysheep-rebate" style="display: none">
+                    <p><span>{$vo.percentage}%</span>预计年化收益率</p>
+                </div>
+                <!--转化率结束-->
+
+                <!--商品价钱-->
+                <div class="buysheep-money">
+                    <div class="moneyBox">
+                        <div class="money-numb"><i class="fa fa-yen"></i><span>{$vo.price}</span></div>
+                        <div class="money-text">羊只单价</div>
+                    </div>
+                    <div class="moneyBox">
+                        <div class="money-numb"><span>{$vo.cycle}</span><u>天</u></div>
+                        <div class="money-text">养殖周期</div>
+                    </div>
+                    <div class="moneyBox">
+                        <div class="money-numb"><span>{$vo.stock}</span><u>只</u></div>
+                        <div class="money-text">剩余数量</div>
+                    </div>
+                </div>
+                <!--商品价钱结束-->
+
+                <!--购买按钮-->
+                {if $vo.stock>0 && $vo.shelftime<=$time}<div class="buysheep-btn"><a href="{:url('/index/shop/gdetails',array('id'=>$vo.id))}">点击领养</a></div>
+                {elseif $vo.stock>0 && $vo.shelftime>$time}<div class="buysheep-btn"><a href="javascript:;">未开放</a></div>
+                {else/}<div class="buysheep-btn"><a href="javascript:;">已领完</a></div>{/if}
+                    
+                <!--购买按钮结束-->
+            </li>
+            {/volist}
+          
+    
+        </ul>
+    </div>
+    <!--内容主体结束-->
+    <!--公共底部-->
+    <div class="m-footer">
+        {include file="footer"/}
+    </div>
+    <!--公共底部结束-->
+</body>
+</html>

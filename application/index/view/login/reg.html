@@ -1,0 +1,134 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>注册</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-register">
+        <!--公司logo-->
+        <img src="/static/home/images/logo.jpg" class="register-logo" />
+        <!--公司logo结束-->
+        
+        <!--昵称-->
+        <div class="register-name">
+            <input name="username" class="usernameval" required="required" type="text" placeholder="您的昵称" />
+        </div>
+        <!--昵称结束-->
+        <!--信息输入-->
+        <div class="register-entry">
+            <div class="entry-box">
+                <i class="fa fa-mobile box-icon"></i>
+                <input name="mobile"  type="text" required="required" placeholder="请输入手机号" class="writetxt phoneNumb" />
+            </div>
+            <div class="entry-box">
+                <i class="fa fa-lock box-icon"></i>
+                <input name="password" type="password" required="required" placeholder="请输入登录密码" class="writepswd passwordval" />
+            </div>
+            <div class="entry-box">
+                <i class="fa fa-lock box-icon"></i>
+                <input name="password2" type="password" required="required" placeholder="请再次输入密码" class="writepswd password2val" />
+            </div>
+            <div class="entry-box">
+                <input type="text" placeholder="请输入验证码" required="required" class="writenumb codeval" />
+                <input type="button" value="点击获取验证码" class="obtainCode" onclick="getSms()" />
+            </div>
+            <div class="entry-box">
+                <i class="fa fa-envira box-icon" style="color: #f66c48;"></i>
+                <input type="text" name="mycode" placeholder="请输入邀请码" value="{if !empty($mycode)}{$mycode} {elseif !empty($_COOKIE['mycode']) }{$_COOKIE['mycode']}{elseif !empty($pasture)}{$pasturecode}{/if}" class="writetxt" />
+                {if !empty($pasture)}<input type="hidden" name="pasture" value="{$pasture}">{/if}
+            </div>
+        </div>
+        <!--信息输入结束-->
+        <!--登录按钮-->
+        <input type="button"  onclick="setReg()" class="register-btn" value="确认注册" />
+        <!--登录按钮结束-->
+      
+    </div>
+    <!--内容主体结束-->
+    <script>
+        var isPhone = 1;
+        function getSms() {
+            checkPhone(); //验证手机号
+            if (isPhone) {
+                var phone = $('.phoneNumb').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/login/getsms")}',
+                    data:{
+                        phone:phone
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.data);
+                        }else if(data.type==2){
+                            layer.msg(data.data);
+                        }else if(data.type==3){
+                            layer.msg(data.data);
+                        }else{
+                            layer.msg(data.data);
+                        }
+                    },
+                    error: function(xhr){
+                        //layer.msg('error');
+                    }
+                });
+                resetCode(); //倒计时
+            }
+        }
+        function setReg() {
+            checkPhone(); //验证手机号
+            if (isPhone) {
+                var phone = $('.phoneNumb').val();
+                var username = $('.usernameval').val();
+                var password = $('.passwordval').val();
+                var password2 = $('.password2val').val();
+                var code = $('.codeval').val();
+                var mycode = $("input[name='mycode']").val();
+                if(username=='' || username==null){
+                    layer.msg('昵称不能为空！');
+                    return ;
+                }
+                if(code=='' || code==null){
+                    layer.msg('验证码不能为空！');
+                    return ;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/login/reg")}',
+                    data:{
+                        mobile:phone,
+                        username:username,
+                        password:password,
+                        password2:password2,
+                        code:code,
+                        mycode:mycode,
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg,function(){
+                            //关闭后的操作
+                            window.location.href='/index/login/login';
+                            });
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+                resetCode(); //倒计时
+            }
+        }
+    </script>
+</body>
+</html>

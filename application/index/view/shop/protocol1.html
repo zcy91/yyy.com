@@ -1,0 +1,25 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>赠送协议</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-protocol">
+        {if !empty($conrract.background)}
+            <img src="{php}if(!empty($conrract['background'])) echo imgUrl($conrract['background']);else echo imgUrl(''){/php}" />
+        {else/}
+            <img src="/static/home/images/ht-one.jpg" />
+            <img src="/static/home/images/ht-two.jpg" />
+        {/if}
+        
+    </div>
+
+</body>
+</html>

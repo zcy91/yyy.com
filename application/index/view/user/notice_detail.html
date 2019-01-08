@@ -1,0 +1,33 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+<style>
+   .detail-cycle{
+       font-size: .25rem;
+       padding-top: .25rem;
+       color: #808080;
+       padding: .2rem;
+   }
+</style>
+<!--公共头部-->
+<div class="m-head">
+    <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+        <i class="fa fa-angle-left"></i>
+    </a>
+    <p>详情</p>
+</div>
+<!--公共头部结束-->
+<!--内容主体-->
+<div class="m-orderdetail">
+    <!--订单编号-->
+    <div class="orderdetail-numb">
+        <p>订单编号：<span>{$ordersn}</span></p>
+    </div>
+    <!--订单编号结束-->
+    <!--羊羔信息-->
+    <div class="orderdetail-sheep">
+        <div class="detail-cycle">
+            您好，您推荐的用户{$username}领羊并兑换‘旅游/羊肉’成功，您因此所获收益{$data.money}{if $data['money_type'] ==1}元{else/}积分{/if}已存入‘钱包’，请注意查收。如有疑问，请联系官方客服查询。
+        </div>
+        </div>
+</div>

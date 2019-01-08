@@ -1,0 +1,176 @@
+{include file="header"/}
+    <link href="/static/home/css/swiper-3.3.1.min.css" rel="stylesheet" />
+    <script src="/static/home/js/swiper-3.3.1.jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".notice-line").slideUp();
+        })
+    </script>
+
+</head>
+<body style="position:relative;">
+    <!--公共头部-->
+    <div class="m-head">
+        <p>我是牧场主</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-index">
+
+        <!--轮播广告-->
+        <div class="index-advimg">
+            <!-- Swiper -->
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    {volist name='ad' id='vo'}
+                    <div class="swiper-slide" onclick="window.location.href='{$vo.site}';">
+                        <img style="height: 3rem" alt="{$vo.title}" src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" />
+                    </div>
+                    {/volist}
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <!--轮播广告结束-->
+        <!--公告-->
+        <div class="index-notice-v2">
+            <span class="notice-title">公告</span>
+            <ul class="notice-line">
+                {if !empty($fabu)}
+                    <li><a href="javascript:;">{$fabu.gname}已开售，仅剩{$fabu.stock}只，速来抢购！</a></li>
+                {/if}
+                {if !empty($isorder)}
+                {volist name="isorder" id="vo"}
+                <li><a href="javascript:;">恭喜{if !empty($vo.username)}{$vo.username}{else !empty($vo.realname)/}{$vo.realname}{/if}认领食花百草羊成功，成为尊贵牧场主！</a></li>
+                {/volist}
+                {/if}
+                {volist name="notice" id="vo"}
+                <li><a href="{:url('index/index/notice_detail',array('id'=>$vo.id))}">{$vo.title}</a></li>
+                {/volist}
+            </ul>
+            <a href="{:url('index/index/notice_list')}" class="morenotice">更多<i class="fa fa-angle-right"></i></a>
+
+        </div>
+        <!--公告结束-->
+        <!--用户信息-->
+        <div class="index-usersum">
+            <ul>
+                <li class='first-list'>
+                    <p class='usersum-note'>羊只出栏数</p>
+                    <p class='usersum-mount'>{$islambnum}头</p>
+                </li>
+                <li class='mid-list'>
+                    <p class='usersum-note'>羊只存栏数</p>
+                    <p class='usersum-mount'>{$yearlambnum}头</p>
+                </li>
+                <li>
+                    <p class='usersum-note'>注册牧场主</p>
+                    <p class='usersum-mount'>{$usernum}人</p>
+                </li>
+            </ul>
+        </div>
+        <!--用户信息结束-->
+        <!--功能导航-->
+        <div class="index-menu">
+            <div class="menuBox">
+                <ul>
+                    <li class='project-detail'>
+                        <a href="{:url('/index/discovery/content',array('id'=>14))}">
+                            <img src="/static/home/images/project-detail.png" />
+                            <p>项目详情</p>
+                        </a>
+                    </li>
+                    <li class='pasture-intro'>
+                        <a href="{:url('/index/discovery/pasture')}">
+                            <img src="/static/home/images/pasture-intro.png" />
+                            <p>牧场介绍</p>
+                        </a>
+                    </li>
+                    <li class='pasture-vido'>
+                        <a href="{:url('/index/discovery/sheepvideo')}">
+                            <img src="/static/home/images/pasture-vido.png" />
+                            <p>牧场视频</p>
+                        </a>
+                    </li>
+                    <li class='earn-money'>
+                        <a href="{:url('/index/shop/glist')}">
+                            <img src="/static/home/images/earn-money.png" />
+                            <p>我要领养</p>
+                        </a>
+                    </li>
+                    <li class='friend'>
+                        <a href="{:url('/index/user/invite')}">
+                            <img src="/static/home/images/friend.png" />
+                            <p>邀请好友</p>
+                        </a>
+                    </li>
+                    <li class='profit'>
+                        <a href="{:url('index/user/coupon')}">
+                            <img src="/static/home/images/profit.png" />
+                            <p>福利优惠</p>
+                        </a>
+                    </li>
+                    
+                    <li class='about-us'>
+                        <a href="{:url('/index/discovery/index')}">
+                            <img src="/static/home/images/about-us.png" />
+                            <p>了解我们</p>
+                        </a>
+                    </li>
+                    <li class='question'>
+                        <a href="{:url('/index/discovery/questions')}">
+                            <img src="/static/home/images/question.png" />
+                            <p>常见问题</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--功能导航结束-->
+        <!--客服信息-->
+        <div class="index-service">
+            <p>遇到问题可于工作日9:30-17:30</p>
+            <p>联系客服</p>
+            <p>400-833-6836</p>
+        </div>
+        <!--客服信息结束-->
+    </div>
+    <!--内容主体结束-->
+    <!--公共底部-->
+    <div class="m-footer">
+        {include file="footer"/}
+    </div>
+    <!--公共底部结束-->
+
+    <script>
+        var swiper = new Swiper('.swiper-container', {
+            pagination: '.swiper-pagination',
+            slidesPerView: 1,
+            paginationClickable: true,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: 2000,
+        });
+    </script>
+
+
+
+
+
+    <!--养殖数-->
+    <!--<div class="index-sum">
+        <p>养殖总数</p>
+        <span><a href="sheepfold.html"><u>15</u></a>只</span>
+    </div>-->
+    <!--养殖数结束-->
+    <!--账户余额-->
+    <!--<div class="index-money">
+        <p>账户余额</p>
+        <span><a href="wallet.html"><u>999999999.00</u></a>元</span>
+    </div>-->
+    <!--账户余额结束-->
+
+
+</body>
+</html>

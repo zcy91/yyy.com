@@ -1,0 +1,42 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>耳标列表</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-recommend">
+
+        
+
+         <!--记录列表-->
+        <div class="recommend-list">
+            <!--<div class="list-tips">所有推荐类奖金可于邀请人认购期满后单独提现</div>-->
+            <ul>
+                {volist name='list' id='vo'}
+                <li>
+                    <img src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" class="list-photo" />
+                    <div class="list-info">
+                        <p>{$vo.lambsn}</p>
+                        <span>创建时间：{php}if(!empty($vo['creationtime'])) echo date("Y-m-d H:i",$vo['creationtime']) ;else echo'';{/php}</span>
+                    </div>
+                    <div class="list-money">
+                        <span></span>
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+        </div>
+        <!--记录列表结束-->
+
+    </div>
+    <!--内容主体结束-->
+
+</body>
+</html>

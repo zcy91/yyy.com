@@ -1,0 +1,182 @@
+{include file="header"/}
+
+    <link href="/static/home/css/swiper-3.3.1.min.css" rel="stylesheet" />
+    <script src="/static/home/js/swiper-3.3.1.jquery.min.js"></script>
+    <script src="http://g.alicdn.com/de/prismplayer/1.4.2/prism-min.js" type="text/javascript"></script>
+    <link href="http://g.alicdn.com/de/prismplayer/1.4.2/skins/default/index-min.css" rel="stylesheet" />
+</head>
+<style>
+    .prism-big-play-btn{
+        display: none !important;
+    }
+    .prism-controlbar{
+        display: unset !important;
+    }
+    li{width: 50%!important;}
+</style>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>羊羊详情</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-sheepdetail">
+
+        <!--视频展示-->
+        <div class="sheepdetail-video" id="sheepdetail-video">
+            <!--<div id="J_prismPlayer" class="prism-player" style="display:block;"></div>-->
+            {if !empty($videolist)}
+                {if substr($videolist.0.site,0,4)=='http'}
+                    <iframe style=" width: 6rem; height: 4rem" src="{$videolist[0]['site']}" frameborder=0 'allowfullscreen' class="video-adv" id='video'></iframe>
+
+                {else/}
+                    <img src="/static/home/images/videobg.jpg" class="videoBg" style="display:none;" />
+                <div id="J_prismPlayer" class="prism-player" style="display:block;"></div>
+                <script>
+                    // 初始化播放器
+
+
+                </script>
+                {/if}
+                
+            {else/}
+            <img src="/static/home/images/videobg.jpg" class="videoBg" />
+            {/if}
+            
+        </div>
+        <!--视频展示结束-->
+        <!--羊信息-->
+        <div class="sheepdetail-info">
+            <p>{$mylamb.lambname}&nbsp;<span>耳标:<b>{$mylamb.lambsn}</b></span></p>
+            <span>{$mylamb.message}</span>
+            <a href="{:url('/index/user/qrcode')}" class="info-share"><i class="fa fa-share-alt"></i></a>
+        </div>
+        <!--羊信息结束-->
+        <!--养殖周期-->
+        <div class="sheepdetail-cycle">
+            <ul>
+                <li>生长：<span>{$czday}天</span></li>
+                <li>预计<span>{$mylamb.cycle}</span>天成熟</li>
+                <!--<li>累计收益：<span>{$yjsy}</span>元</li>-->
+            </ul>
+        </div>
+        <!--养殖周期结束-->
+        <!--往期视频-->
+        <div class="sheepdetail-videotape">
+            <h1>往期视频</h1>
+            <div class="swiper-container">
+                <div class="swiper-wrapper" >
+                    {if !empty($videolist)}
+                    {volist name='videolist' id='vo' key='key'}
+                    <div class="swiper-slide">
+                        <a href="javascript:;">
+                            <img src="{php}if(!empty($vo['cover'])) echo imgUrl($vo['cover']);else echo '/static/home/images/videobg.jpg';{/php}" onclick="qiehuan('{$videolist[$key-1][\'site\']}',this)" name="{$videolist[$key-1]['cover']}"/>
+                        </a>
+                    </div>
+                    {/volist}
+                    {/if}
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <!--往期视频结束-->
+
+    </div>
+    <!--内容主体结束-->
+    <!--详情公共底部-->
+    <div class="sheepdetail-footer">
+        <div style="margin: 0 auto;width: 5.5rem">
+            <a style="    margin: .1rem .1rem;float: left;" href="{:url('/index/user/soldsheep',array('id'=>$mylamb.id))}">我要兑换</a>
+            <a style="    margin: .1rem .1rem;float: left;" href="{:url('/index/user/sheepgive',array('id'=>$mylamb.id))}">我要赠送</a>
+        </div>
+    </div>
+    <!--详情公共底部结束-->
+
+
+    <script type="text/javascript">
+        $(function () {
+            // if($("#J_prismPlayer")){
+            //     $("#J_prismPlayer").find("video").attr("webkit-playsinline", "webkit-playsinline");
+            //     var player = new prismplayer({
+            //         id: "J_prismPlayer", // 容器id
+            //         source: "{php}if(!empty($videolist[0]['site'])) echo imgUrl($videolist[0]['site']);else echo imgUrl(''){/php}",//视频地址
+            //         cover: "{php}if(!empty($videolist[0]['cover'])) echo imgUrl($videolist[0]['cover']);else echo '/static/home/images/videobg.jpg';{/php}",//视频封面图
+            //         width: "6rem",         // 播放器宽度
+            //         height: "4rem",      // 播放器高度
+            //         autoplay: true,
+            //     });
+            //
+            //     var clickDom = document.getElementsByClassName('prism-controlbar');
+            //     // clickDom.addEventListener('click', function (e) {
+            //     //     // 调用播放器的play方法
+            //     //     player.play();
+            //     // });
+            //
+            //     // 监听播放器的pause事件
+            //     player.on('pause', function () {
+            //         layer.msg('播放器暂停啦！');
+            //     });
+            // }
+
+
+
+        })
+
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 3,
+            slidesPerColumn: 1,
+            spaceBetween: 10,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+        function qiehuan(src,obj) {
+            var parent = document.getElementById('sheepdetail-video');
+            var div = document.createElement("div");
+           if(src.substr(0, 4) == 'http'){
+               $("#J_prismPlayer").remove();
+               parent.innerHTML = " <iframe style=\" width: 6rem; height: 4rem\" src=\"src\" frameborder=0 'allowfullscreen' class=\"video-adv\" id='video'></iframe>";
+               // parent.appendChild(div)
+                $('.prism-player').remove();
+                $("#video").attr('src',src)
+           }else{
+                var picture = obj.name;
+               var picture = '/server/'+ picture;
+               // $('.video-adv').remove();
+               // $(".prism-player").remove();
+               parent.innerHTML = " <div id=\"J_prismPlayer\" class=\"prism-player\" style=\"display:block;\"></div>";
+                src = '/server/'+src;
+               // parent.appendChild(div)
+               var player = new prismplayer({
+                   id: "J_prismPlayer", // 容器id
+                   source: src,//视频地址
+                   cover: picture,//视频封面图
+                   width: "6rem",         // 播放器宽度
+                   height: "4rem",      // 播放器高度
+                   autoplay: false,
+               });
+
+               var clickDom = document.getElementById('J_clickToPlay');
+               clickDom.addEventListener('click', function (e) {
+               //     // 调用播放器的play方法
+                    player.play();
+               });
+
+               // 监听播放器的pause事件
+               player.on('pause', function () {
+                   layer.msg('播放器暂停啦！');
+               });
+           }
+
+        }
+    </script>
+
+</body>
+</html>

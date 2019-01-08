@@ -1,0 +1,136 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head" style="">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>邀请好友</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-invite">
+        <ul class="coupon-title">
+            <li style="width: 49.5%;" class="ahover" onclick="window.location.href='{:url('/index/user/invite')}'">邀请好友</li>
+            <li style="width: 49.5%;" onclick="window.location.href='{:url('/index/user/recommend')}'">推荐记录</li>
+        </ul>
+       
+        <!--我的邀请码-->
+        <div class="invite-top">
+            <img src="/static/home/images/invtop.jpg" class="top-bg" />
+            <div class="top-numb">
+               <div class="numb-mynumb">
+                   <p>{$mycode}</p>
+                   <span>我的邀请码</span>
+               </div>
+               
+                <ul class="numb-mypeople">
+                    <li>
+                        <p onclick="window.location='{:url('/index/user/recommend')}'">{$num}</p>
+                        <span>已邀请人数</span>
+                    </li>
+                    <li>
+                        <p>{$mycredit2}</p>
+                        <span>累计积分</span>
+                    </li>
+                </ul>
+                <ul class="setup-ftlist" >
+                    <li>
+                            <p style="margin-left: 0.1rem;font-size: .25rem;color: #5fbd78;margin-bottom: .1rem;">我的推荐人</p>
+                            {if !empty($member['agentid'])}
+                                <span>{php}echo icode($member['agentid']);{/php}</span>
+                            {else/}
+                            <input style="margin:0.2rem; width: 50%" type="text" id="agentid" name="agentid" value="" placeholder="请填写我的推荐人">
+                                <span style=' float: right;    text-align: center;    border: 1px solid #d9d9d9;    padding: .1rem 0;    color: #808080;' onclick="setagent()">提交</span>
+                            {/if}
+                            
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--我的邀请码结束-->
+
+        <!--邀请奖励-->
+        <div class="invite-prize">
+            <div class="prize-title">
+                邀请奖励
+            </div>
+            <ul>
+                <li>
+<!--                    <i class="fa fa-user"></i>-->
+<p>&nbsp;</p>
+                </li>
+                <li>
+                    <i class="fa fa-gift"></i>
+                    <p>推荐好友养羊成功，即可获得与被推荐人养羊金额等同的积分奖励，可在积分商城购物时使用。</p>
+                </li>
+                <li>
+<!--                    <i class="fa fa-credit-card"></i>
+                    <p>所有推荐类奖金可于邀请人认购期满后单独提现</p>-->
+                </li>
+            </ul>
+        </div>
+        <!--邀请奖励结束-->
+
+        <!--分享-->
+        <div class="invite-share">
+            <ul>
+                <li>
+                    <a href="javascript:shareHref()" class="wechatBtn">
+                        <i class="fa fa-wechat"><span>分享到微信</span></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('/index/user/qrcode')}" class="friendBtn">
+                        <i class="fa fa-spinner"><span>分享我的二维码</span></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!--分享结束-->
+
+    </div>
+    <!--内容主体结束-->
+    <!-- 主页面标题 -->
+    <div style='display:none;'>
+            <p>链接地址：</p>
+            <input id="sharehref"  type="url" value="{$sitehttp}{:url('/index/login/reg')}" />
+            <p>链接标题：</p>
+            <input id="sharehrefTitle"  type="text" value="{$member.username}邀请你加入【我是牧场主】" />
+            <p>链接描述：</p>
+            <input id="sharehrefDes"  type="text" value="{$member.username}邀请你加入【我是牧场主】"/>
+    </div>    
+{include file="share"/}
+
+<script>
+//    if(typeof(yangJs) != 'undefined'){
+//       $('.wechatBtn').hide();
+//    }
+    function setagent(){
+        var agentid = $('#agentid').val();
+        $.ajax({
+                    type: 'POST',
+                    url: '{:url("/index/user/setagent")}',
+                    data:{
+                        agentid:agentid,
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        if(data.type==1){
+                            layer.msg(data.msg);
+                            setTimeout(" location.reload()",1500)
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    },
+                    error: function(xhr){
+                        layer.msg('error');
+                    }
+                });
+    }
+    
+</script>
+</body>
+</html>

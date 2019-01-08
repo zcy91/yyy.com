@@ -1,0 +1,98 @@
+{include file="header"/}
+    
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>充值</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-take">
+        <!--提现信息-->
+        <div class="take-way"><h1></h1></div>
+        <div class="take-way">
+            <h1>充值详情</h1>
+            <ul>
+                <li>
+                    <span>充值串号：</span>
+                    <u>{$params.out_trade_no}</u> 
+                </li>
+                <li>
+                    <span>充值金额：</span>
+                    <u><i class="fa fa-yen"></i>{$params.total_fee/100}</u>
+                </li>
+            </ul>
+        </div>
+        <!--提现信息结束-->
+        <!--提现方式-->
+        <div class="take-way">
+            <h1>充值</h1>
+            <ul>
+                <li>
+                    <label>
+                        {if $params.type==2}
+                        <span><i class="fa fa-wechat weixin"></i>微信充值</span>
+                        {elseif  $params.type==3/}
+                        <form id="formid" method='post' action="/index/index/alipay">
+                            <input type="hidden" id="WIDout_trade_no" name="WIDout_trade_no" value="{$params.out_trade_no}" />
+                            <span><i style="color: #00A0E8;" class="fa fa-paypal"></i>支付宝充值</span>
+                        </form>
+                        {elseif  $params.type==4/}
+                        <span><i class="fa fa-credit-card-alt bankcard"></i>银行卡充值</span>
+                        {elseif  $params.type==5/}
+                        <span><i class="fa fa-credit-card-alt bankcard"></i>未定义</span>
+                        
+                        {/if}
+                    </label>
+                </li>
+            </ul>
+        </div>
+        <!--提现方式结束-->
+        <!--购买按钮-->
+        <div class="take-btn">
+            <a href="javascript:;"  onclick="callpay()" >确认充值</a>
+        </div>
+        <!--购买按钮结束-->
+    </div>
+    <!--内容主体结束-->
+<script type="text/javascript">
+	//调用微信JS api 支付
+	function jsApiCall()
+	{
+		WeixinJSBridge.invoke(
+			'getBrandWCPayRequest',
+                {if !empty($jsApiParameters)}{$jsApiParameters}{else/}''{/if},
+			function(res){
+				WeixinJSBridge.log(res.err_msg);
+			}
+		);
+	}
+
+	function callpay()
+	{
+            {if $params.type==2}
+                if (typeof WeixinJSBridge == "undefined"){
+		    if( document.addEventListener ){
+		        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+		    }else if (document.attachEvent){
+		        document.attachEvent('WeixinJSBridgeReady', jsApiCall); 
+		        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+		    }
+		}else{
+		    jsApiCall();
+		}       
+            {elseif  $params.type==3 /}
+               document.getElementById("formid").submit();
+            {elseif  $params.type==4/}
+            {elseif  $params.type==5/}
+            {/if}
+		
+	}
+	</script>
+</body>
+</html>

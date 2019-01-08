@@ -1,0 +1,189 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+<style>
+    #anniu1 { display: block; float: right;  right: .2rem; background: #f66c48; color: #fff; padding: .1rem .2rem; font-size: .25rem; border-radius: .1rem; overflow: hidden; }
+    #anniu { display: block; float: right;  right: .2rem; background: #f66c48; color: #fff; padding: .1rem .2rem; font-size: .25rem; border-radius: .1rem; overflow: hidden; }
+</style>
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>兑换详情</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-orderdetail">
+        <!--订单编号-->
+        <div class="orderdetail-numb">
+            <p>兑换编号：<span>{$myorder.0.sellsn}</span></p>
+        </div>
+        <!--订单编号结束-->
+        <!--羊羔信息-->
+        <div class="orderdetail-sheep">
+            {volist name="myorder" id="vo"}
+            <div class="infoBox">
+                <div class="info-photo">
+                    <img src="{php}if(!empty($vo['avatar'])) echo imgUrl($vo['avatar']);else echo '/static/home/images/videobg.jpg';{/php}" style="position: unset;width: 100%"/>
+                </div>
+                <div class="info-detail">
+                    {php}
+                    if($vo['money']>0){{/php}
+                    <div class="detail-name">羊羔名字：<span>{$vo.lambname}</span></div>
+                    <div class="detail-cycle" style="padding-top: 0">羊羔价格：<span>{$vo.price}元</span></div>
+                    <div class="detail-cycle" style="padding-top: 0">养殖周期：<span>{php}echo floor(($myorder[0]['creationtime'] - $myorder[0]['paytime'])/(60*60*24)){/php}</span><u>天</u></div>
+                    <div class="detail-rebate"><span>{$vo.percentage}%</span><u>预计年化收益率</u></div>
+                    <div class="detail-numb"></div>
+                    {php}} elseif($vo['exchange']==1){ {/php}
+                    <div class="detail-name">羊羔名字：<span>{$vo.lambname}</span></div>
+                    <div class="detail-cycle" style="padding-top: 0">羊羔价格：<span>{$vo.price}元</span></div>
+                    <div class="detail-cycle" style="padding-top: 0">养殖周期：<span>{php}echo floor(($myorder[0]['creationtime'] - $myorder[0]['paytime'])/(60*60*24)){/php}</span><u>天</u></div>
+                    <div class="detail-cycle" style="padding-top: 0"  onclick="goods_detail()">产品详情：<strong style="color:blue">查看详情</strong></div>
+                    {php}}elseif($vo['exchange']==3){{/php}
+                    <div class="detail-name">羊羔名字：<span>{$vo.lambname}</span></div>
+                    <div class="detail-cycle" style="padding-top: 0">羊羔价格：<span>{$vo.price}元</span></div>
+                    <div class="detail-cycle" style="padding-top: 0">养殖周期：<span>{php}echo floor(($myorder[0]['creationtime'] - $myorder[0]['paytime'])/(60*60*24)){/php}</span><u>天</u></div>
+                    <div class="detail-cycle"  style="padding-top: 0" onclick="detail()">旅游计划：<strong style="color:blue">查看详情</strong></div>
+                    {php}}elseif($vo['exchange']==4){{/php}
+                    <div class="detail-name">羊羔名字：<span>{$vo.lambname}</span></div>
+                    <div class="detail-cycle" style="padding-top: 0">羊羔价格：<span>{$vo.price}元</span></div>
+                    <div class="detail-cycle" style="padding-top: 0">养殖周期：<span>{php}echo floor(($myorder[0]['creationtime'] - $myorder[0]['paytime'])/(60*60*24)){/php}</span><u>天</u></div>
+                    <div class="detail-cycle"  style="padding-top: 0" onclick="friend_detail({$myorder[0]['buyid']})">好友ID：<strong style="color:blue">{$myorder[0]['buyid']}</strong></div>
+                    {php}}{/php}
+                </div>
+            </div>
+            {/volist}
+        </div>
+        <!--羊羔信息结束-->
+        <!--资金信息-->
+        {if $myorder.0.money > 0}
+        <div class="orderdetail-money">
+            <div class="moneyBox">
+                <span>兑换金额</span>
+                <p><i class="fa fa-yen"></i><u>{$myorder.0.money}</u></p>
+            </div>
+        </div>
+        {/if}
+        {if $myorder.0.status ==3}
+        <div class="orderdetail-money" style="padding: 0">
+            <div class="moneyBox moneySum">
+                <a style="" onclick="complete()" id="anniu"> 确认收货</a>
+            </div>
+        </div>
+        {/if}
+        {if $del ==1}
+        <div class="orderdetail-money" style="padding: 0">
+            <div class="moneyBox moneySum">
+                <!--<a style="" onclick="complete1()" id="anniu1"> 取消行程</a>-->
+            </div>
+        </div>
+        {/if}
+        <!--资金信息结束-->
+        <!--订单信息-->
+        <div class="orderdetail-info">
+            <p>兑换类型：{if $myorder[0]['exchange']==1}产品 {elseif $myorder[0]['exchange']==2}收益{elseif $myorder[0]['exchange']==3}旅游{elseif $myorder[0]['exchange']==4}赠送{/if}</p>
+            <p>兑换状态：{if $myorder[0]['status']==1}待审核 {elseif $myorder[0]['status']==2 || $myorder[0]['status']==4}完成{elseif $myorder[0]['status']==3}已发货{elseif $myorder[0]['status']==-1}驳回{elseif $myorder[0]['status']==-2}已申请取消行程{/if}{if $myorder[0]['isdelete'] ==1}——<span style="color: red">已取消行程</span>{/if}</p>
+            <p>兑换时间：{php}if(!empty($myorder[0]['creationtime'])){ echo date("Y-m-d H:i",$myorder[0]['creationtime']);}else{ echo '未兑换';}{/php}</p>
+            {if !empty($myorder[0]['shipping_time'])}<p>配送方式：{$myorder[0]['shipping_type']}</p>
+            <p>物流单号：{$myorder[0]['shipping_no']}</p>
+            {/if}
+            {if !empty($arrive)}
+            <p>抵达日期：{$arrive}</p>
+            <p>游玩日期：{$play}</p>
+            <p>返程日期：{$back}</p>
+            {/if}
+        </div>
+        <!--订单信息结束-->
+    </div>
+
+    <!--内容主体结束-->
+<input type="hidden" id="sellsn" value="{$myorder[0]['sellsn']}">
+    <script>
+        function goods_detail() {
+            var url = "/index/discovery/content/id/15/agentid/"+{$uid}+".html";
+
+            window.location.href=url;
+        }
+        function detail() {
+
+            var url = "/index/user/detail/id/"+{$tourtype}+"/agentid/"+{$uid}+".html";
+
+            window.location.href=url;
+        }
+        function complete1() {
+
+            layer.open({
+                content: '确定取消行程吗？'
+                ,btn: ['确定', '关闭']
+                ,yes: function(index){
+                    $.post("{:url('index/user/exchange_complete1')}", { sellsn: $("#sellsn").val() }, function (data) {
+                        layer.msg(data.msg)
+                    })
+                    setTimeout("window.location.href=document.referrer",1500);
+                    layer.close(index);
+                }
+            });
+        }
+        function complete() {
+
+            layer.open({
+                content: '确定收货吗？'
+                ,btn: ['确定', '关闭']
+                ,yes: function(index){
+                    $.post("{:url('index/user/exchange_complete')}", { sellsn: $("#sellsn").val() }, function (data) {
+                        layer.msg(data.msg)
+                    })
+                    setTimeout("location.reload()",1000);
+                    layer.close(index);
+                }
+            });
+        }
+        function friend_detail(id) {
+            $.ajax({
+                type: 'POST',
+                url: '{:url("/index/user/getmember")}',
+                data:{
+                    member_type:1,
+                    member_val:id
+                },
+                dataType:'json',
+                success: function(data){
+                    if(data.type==1){
+
+                        //示范一个公告层
+                        layer.open({
+                            type: 1
+                            ,title: false //不显示标题栏
+                            ,closeBtn: false
+                            ,area: '5.5rem;'
+                            ,shade: 0.8
+                            ,btn: ['确认', '取消']
+                            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                            ,btnAlign: 'c'
+                            ,moveType: 1 //拖拽模式，0或者1
+                            ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">好友信息<br><br>用户id:'+data.data.id+'<br>用户昵称:'+data.data.username+'<br>用户手机:'+data.data.mobile+'<br></div>'
+                            ,success: function(layero){
+                                var btn = layero.find('.layui-layer-btn');
+                                btn.find('.layui-layer-btn0').attr({
+
+
+                                });
+                            }
+                        });
+
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                },
+                error: function(xhr){
+                    layer.msg('error');
+                }
+
+
+            });
+        }
+    </script>
+
+</body>
+</html>

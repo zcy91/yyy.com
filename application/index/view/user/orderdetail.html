@@ -1,0 +1,78 @@
+{include file="header"/}
+</head>
+<body style="position:relative;">
+
+    <!--公共头部-->
+    <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>订单详情</p>
+    </div>
+    <!--公共头部结束-->
+    <!--内容主体-->
+    <div class="m-orderdetail">
+        <!--订单编号-->
+        <div class="orderdetail-numb">
+            <p>订单编号：<span>{$myorder.0.ordersn}</span></p>
+        </div>
+        <!--订单编号结束-->
+        <!--羊羔信息-->
+        <div class="orderdetail-sheep">
+            {volist name="myorder" id="vo"}
+            <div class="infoBox">
+                <div class="info-photo">
+                    <img src="{php}if(!empty($vo['img'])) echo imgUrl($vo['img']);else echo imgUrl(''){/php}" style="position: unset"/>
+                </div>
+                <div class="info-detail">
+                    {php}
+                    if($vo['price']){{/php}
+                    <div class="detail-name">羊羔名字：<span>{$vo.lambname}</span></div>
+                    <div class="detail-cycle">养殖周期：<span>{$vo.cycle}</span><u>天</u></div>
+                    <div class="detail-rebate"><span>{$vo.percentage}%</span><u>预计年化收益率</u></div>
+                    <div class="detail-numb"></div>
+                    {php}} else{ {/php}
+                    <div class="detail-name">商品名字：<span>{$vo.lambname}</span></div>
+                    {php}}{/php}
+
+                </div>
+            </div>
+            {/volist}
+        </div>
+        <!--羊羔信息结束-->
+        <!--资金信息-->
+        <div class="orderdetail-money">
+            <div class="moneyBox">
+                <span>羔羊单价</span>
+                <p><i class="fa fa-yen"></i><u>{$myorder.0.price}</u></p>
+            </div>
+<!--            <div class="moneyBox">
+                <span>羔羊数量</span>
+                <p><u></u></p>
+            </div>-->
+            <div class="moneyBox">
+                <span>订单总价</span>
+                <p><i class="fa fa-yen"></i><u>{$myorder.0.money}</u></p>
+            </div>
+            <div class="moneyBox moneySum">
+                <span>实付款</span>
+                <p><i class="fa fa-yen"></i><u>{$myorder1.0.price}</u></p>
+            </div>
+        </div>
+        <!--资金信息结束-->
+        <!--订单信息-->
+        <div class="orderdetail-info">
+            <p>创建时间：{php}echo date("Y-m-d H:i",$myorder[0]['creationtime']);{/php}</p>
+            <p>付款时间：{php}if(!empty($myorder[0]['paytime'])){ echo date("Y-m-d H:i",$myorder[0]['paytime']);}else{ echo '未支付';}{/php}</p>
+            <p>支付方式：{if $myorder.0.paytype==1}余额支付{elseif condition="$myorder.0.paytype eq 2 " /}微信支付{elseif  condition="$myorder.0.paytype eq 0 " /}未支付{else/}其他支付{/if}</p>
+           
+        </div>
+        <!--订单信息结束-->
+    </div>
+            {if $myorder.0.status==0}
+            <a style="display: block;width: 3rem;margin: .2rem auto;padding: .2rem 0;text-align: center;font-size: .3rem;color: #fff;border-radius: .1rem;background: #f66c48" href="{:url('/index/order/pay',array('oid'=>$myorder.0.id))} " >支付订单</a>
+            {/if}
+    <!--内容主体结束-->
+
+</body>
+</html>

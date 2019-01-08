@@ -1,0 +1,258 @@
+{include file="header"/}
+    <link rel="stylesheet" type="text/css" href="/static/home/css/wx.css" />
+    <link rel="stylesheet" type="text/css" href="/static/home/css/page_mp_article_improve_combo322696.css">
+    
+    <style>
+        /*img{display:block;width:100%}*/
+        .item-pic-list ul {
+            overflow: hidden;
+        }
+        .item-pic-list ul li {
+            float: left;
+            width: 2.9rem;
+            box-sizing: border-box;
+            padding: .02rem;
+            text-align: center;
+            margin-top: .08rem;
+        }
+        .item-pic-list ul li img {
+            width: 2.5rem;
+            height: 2.5rem !important;
+        }
+    </style>
+</head>
+<body id="activity-detail" class="zh_CN mm_appmsg not_in_mm">
+    <div id="js_article" class="rich_media">
+        <div id="js_top_ad_area" class="top_banner" style="display: none;">
+ 
+        </div>
+         <div class="m-head">
+        <a href="javascript:;" onclick="javascript:window.history.back();return false;" class="head-goback">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <p>{$myarticle.title}</p>
+    </div>
+        <div class="rich_media_inner">
+                        <div id="page-content">
+                <div id="img-content" class="rich_media_area_primary">
+                    <h2 class="rich_media_title" id="activity-name"  style="display:block;">
+                        {$myarticle.title}
+                    </h2>
+                    <div class="rich_media_meta_list"  style="display:unset;font-size: 0.3rem">
+                        <em id="post-date" class="rich_media_meta rich_media_meta_text">{php}echo date("Y-m-d",$myarticle['createtime']){/php}</em>
+                        <a class="rich_media_meta rich_media_meta_link rich_media_meta_nickname" href="{$myarticle.hits}" id="post-user">{$myarticle.username}</a>
+                        {if condition='$isdelarticle eq 1 '} <a class="del_article" style="float: right" value="{$myarticle.id}"> 删除</a> {/if}
+                        <span class="rich_media_meta rich_media_meta_text rich_media_meta_nickname">{$myarticle.username}</span>
+
+                        <div id="js_profile_qrcode" class="profile_container">
+                            <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                                <i class="profile_arrow arrow_out"></i>
+                                <i class="profile_arrow arrow_in"></i>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="rich_media_content " id="js_content">
+                        {$myarticle.content}
+                    </div>
+                    <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style=" ;">
+                    </div>
+                    <div class="product-img-module item-pic-list">
+                        <a class="J_ping" report-eventid="MProductdetail_CommentPictureTab" report-pageparam="1725965683" >
+                            <ul class="">
+                                {foreach name="$myarticle['img']" key="key" item="v2"}
+                                <li class="" >
+                                    <a href="{$v2}"><img src="{$v2}" ></a>
+                                </li>
+                                {/foreach}
+                            </ul>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+        <div style="height:2.6em;width:100%;background-color:#fff"></div>
+
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script>
+    $(".del_article").click(function () {
+        var id = ($(this).attr('value'));
+        layer.confirm('您确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function()
+        {
+            $.ajax({
+                    type: "post",
+                    url: "{:url('index/discovery/del_article')}",
+                data: {
+            "id":id
+        },
+            success : function(data){
+                if(data.status == 0){
+                    layer.msg(data.msg,{ time: 2000});
+                }
+                setTimeout("layer.closeAll()",1500)
+                window.location.href="{:url('index/discovery/community')}";
+            }
+        });
+        });
+
+    })
+    $(".del").click(function () {
+        var id = ($(this).attr('value'));
+        layer.confirm('您确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function()
+        {
+            $.ajax({
+                type: "post",
+                url: "{:url('index/discovery/del_comment')}"+"&aid="+{$myarticle.id},
+                data: {
+                    "id":id
+                },
+                success : function(data){
+                    if(data.status == 0){
+                        layer.msg(data.msg,{ time: 2000});
+                    }
+                    setTimeout("layer.closeAll()",1500)
+                    location.reload();
+                }
+            });
+        });
+
+    })
+    $(".message-icon").click(function () {
+        var id = ($(this).attr('value'));
+        $.ajax({
+            type: 'post',
+            url: "{:url('index/discovery/iscomment_login')}&mid="+id+"&aid="+{$myarticle.id},
+            async:false,
+            dataType:'json',
+            success: function(data){
+                if(data.status==1){
+                    layer.open({
+                        type: 1,
+                        area: ['5.5rem', '4.2rem'],
+                        title: '评论',
+                        shadeClose: true, //点击遮罩关闭
+                        content: '\<\div style="padding:.1rem;" class="comment-window-wrapper"><textarea class="comment-alert" name="comment" id="comment">\<\/textarea>\<input class="comment-alert-submit" type="button" id="comment_sub" value="提交评论">\<\/div>',
+                        end: function () {
+                            location.reload();
+                        }
+                    });
+                    $('#comment_sub').on('click', function(){
+                        $.ajax({
+                            type: 'post',
+                            url: "{:url('index/discovery/comment')}&mid="+id+"&aid=" + {$myarticle.id} + "&cid=0",
+                            async: false,
+                            dataType: 'json',
+                            data:{comment:$('#comment').val()},
+                            success:function (res) {
+                                if(res.status==2){
+                                    layer.msg(res.msg,{anim:0});
+                                    setTimeout("layer.closeAll()",1500)
+                                }else if(res.status==0){
+                                    layer.msg(res.msg,{anim:6})
+                                    setTimeout("layer.closeAll()",1500)
+                                }
+                            }
+                        })
+
+                    });
+                }else{
+                    layer.msg(data.msg,{anim:6});
+                    return false;
+                }
+            }
+        })
+    })
+ function   dianzan(){
+        var url="{:url('index/discovery/comment')}";
+
+        var id = {:input('id')};
+
+        if(id<0){
+            return;
+        }
+        $.ajax({
+            type:'get',
+            url:url, 
+            data:{    
+                 aid:id,
+                mid:0
+            }, 
+            success: function(ok){
+                if(ok.status==1){
+                    var dianzannum=$("#dianzannum").text();
+                    dianzannum=parseInt(dianzannum)+1;
+                    //alert(dianzannum);
+                    $("#dianzannum").text(dianzannum);
+                    $(".icon_praise_gray").attr("style","background-position:0 -18px");
+                    //alert('成功');
+                }else{
+                    alert(ok.msg);
+                }
+
+            }
+        });
+}
+
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
+function fxshow(){
+    $('#yjfx').show();
+}
+function fxhide(){
+    $('#yjfx').hide();
+}
+
+    $(".love-icon").click(function () {
+        var id = ($(this).attr('value'));
+        var num=parseInt($(this).text());
+        var a = $(this);
+        // ($(this).text(2))
+        $.ajax({
+            type: 'get',
+            url: "{:url('index/discovery/comment_love')}&mid="+id+"&aid="+{$myarticle.id},
+            data:{
+
+            },
+            async:false,
+            dataType:'json',
+            success: function(data){
+                if(data.status==1){
+                    a.addClass("love_red");
+                    num +=1;
+                    a.text(num)
+                    layer.msg(data.msg,{anim:0});
+
+                }else{
+                    layer.msg(data.msg,{anim:6});
+                }
+            },
+            error: function(xhr){
+                layer.msg('网络错误，请稍后再试');
+            }
+        });
+    })
+        
+</script>
+
+
+
+
+      
+
+
+ 
+</body>
+
+</html>
