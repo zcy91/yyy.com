@@ -865,4 +865,7 @@ class Index extends Base
 
 
     }
+    public function jiayou(){
+        echo '加油';
+    }
 }
