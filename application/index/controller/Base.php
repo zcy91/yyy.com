@@ -76,6 +76,7 @@ class Base extends Controller  {
                     $wxchat->getCode1($appid, $redirect_uri, $wx = 'wx');
                     exit();
                 } else {
+
                     $code = $_GET['code'];
                     $appid = $this->wc['appid'];
                     $appsecret = $this->wc['appsecret'];
